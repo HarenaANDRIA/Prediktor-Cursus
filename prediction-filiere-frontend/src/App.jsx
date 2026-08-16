@@ -8,7 +8,7 @@ const MATIERES = [
   { id: 'science_de_la_vie_et_de_la_terre', label: 'SVT' },
   { id: 'informatique', label: 'Informatique' },
   { id: 'statistiques_et_probabilites', label: 'Statistiques & Probabilités' },
-  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquée' },
+  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquee' },
   { id: 'francais', label: 'Français' },
   { id: 'anglais', label: 'Anglais' },
   { id: 'philosophie', label: 'Philosophie' },
@@ -21,11 +21,21 @@ const MATIERES = [
 
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
 
+// Palette (ledger / bulletin scolaire concept — flat colors only, no gradients)
+const INK = '#1E2A3A';
+const INK_SOFT = '#55606B';
+const PAPER = '#FFFFFF';
+const LINE = '#D9DCD2';
+const ACCENT = '#9C3B2E';
+const ACCENT_SOFT = '#F3E5E1';
+
 export default function App() {
   const [notes, setNotes] = useState(DEFAULT_NOTES);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showBacQuestion, setShowBacQuestion] = useState(false);
+  const [rejected, setRejected] = useState(false);
 
   const handleInputChange = (id, value) => {
     const val = parseFloat(value);
@@ -39,12 +49,19 @@ export default function App() {
     setNotes(DEFAULT_NOTES);
     setResults(null);
     setError(null);
+    setShowBacQuestion(false);
+    setRejected(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const values = Object.values(notes).filter(v => typeof v === 'number');
+  const moyNum = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  const moyenne = values.length ? moyNum.toFixed(2) : '0.00';
+
+  const fetchRecommendations = async () => {
     setLoading(true);
     setError(null);
+    setShowBacQuestion(false);
+    setRejected(false);
 
     try {
       const response = await axios.post('http://localhost:8000/predict', notes);
@@ -56,52 +73,93 @@ export default function App() {
     }
   };
 
-  const values = Object.values(notes).filter(v => typeof v === 'number');
-  const moyenne = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : 0;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setResults(null);
+    setError(null);
+    setRejected(false);
+
+    if (moyNum < 10) {
+      setShowBacQuestion(true);
+    } else {
+      fetchRecommendations();
+    }
+  };
+
+  const handleConfirmBac = () => {
+    fetchRecommendations();
+  };
+
+  const handleRejectBac = () => {
+    setShowBacQuestion(false);
+    setRejected(true);
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-12">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen font-sans pb-16" style={{ backgroundColor: PAPER, color: INK }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+        .font-display { font-family: 'Fraunces', serif; font-feature-settings: 'ss01' 1; }
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+        .font-sans { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
+
+      <header className="sticky top-0 z-50 border-b" style={{ backgroundColor: PAPER, borderColor: LINE }}>
+        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Prédiktor Cursus AI</h1>
-            <p className="text-xs text-slate-500">Système d'Orientation Universitaire (15 Matières)</p>
+            <h1 className="font-display text-2xl font-medium tracking-tight" style={{ color: INK }}>
+              Prédiktor Cursus
+            </h1>
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
+              Système d'orientation · 15 matières
+            </p>
           </div>
-          <div className="bg-slate-100 border border-slate-200 px-4 py-2 rounded-lg">
-            <span className="text-xs text-slate-500">Moyenne globale : </span>
-            <span className="text-sm font-semibold text-slate-900">{moyenne} / 20</span>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-right leading-tight" style={{ color: INK_SOFT }}>
+              Moyenne<br />générale
+            </span>
+            <div
+              className="min-w-14 h-14 px-3 rounded-full flex items-center justify-center border-2 font-mono font-semibold text-sm whitespace-nowrap"
+              style={{ borderColor: INK, color: INK }}
+            >
+              {moyenne}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 pt-8">
+      <main className="max-w-6xl mx-auto px-6 pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <section className="lg:col-span-7 space-y-6">
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+            <div className="bg-white rounded-lg p-6 border" style={{ borderColor: LINE }}>
+              <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Notes par Matière</h2>
-                  <p className="text-sm text-slate-500 mt-1">Saisissez les notes obtenues sur 20.</p>
+                  <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de notes</h2>
+                  <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez chaque note sur 20 points.</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg transition-colors font-medium"
+                  className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors"
+                  style={{ borderColor: LINE, color: INK_SOFT }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = LINE; e.currentTarget.style.color = INK_SOFT; }}
                 >
                   Réinitialiser
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
                   {MATIERES.map(m => (
-                    <div key={m.id} className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label htmlFor={m.id} className="text-xs font-medium text-slate-700 truncate pr-2">
-                          {m.label}
-                        </label>
-                        <span className="text-[10px] text-slate-400 font-mono">/20</span>
-                      </div>
+                    <div
+                      key={m.id}
+                      className="flex items-baseline justify-between py-2.5 border-b"
+                      style={{ borderColor: LINE, borderBottomStyle: 'dotted' }}
+                    >
+                      <label htmlFor={m.id} className="font-sans text-sm pr-3" style={{ color: INK }}>
+                        {m.label}
+                      </label>
                       <input
                         id={m.id}
                         type="number"
@@ -110,7 +168,10 @@ export default function App() {
                         step="0.25"
                         value={notes[m.id]}
                         onChange={e => handleInputChange(m.id, e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-slate-900 text-sm font-semibold focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                        className="font-mono text-base font-semibold text-right min-w-[4.5rem] w-auto bg-transparent border-0 border-b-2 focus:outline-none px-1"
+                        style={{ color: INK, borderColor: 'transparent' }}
+                        onFocus={e => { e.currentTarget.style.borderColor = ACCENT; }}
+                        onBlur={e => { e.currentTarget.style.borderColor = 'transparent'; }}
                         required
                       />
                     </div>
@@ -120,9 +181,12 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm disabled:opacity-50 transition-colors text-center"
+                  className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium transition-colors disabled:opacity-50 text-center"
+                  style={{ backgroundColor: loading ? INK_SOFT : INK, color: PAPER }}
+                  onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = ACCENT; }}
+                  onMouseLeave={e => { if (!loading) e.currentTarget.style.backgroundColor = INK; }}
                 >
-                  {loading ? "Analyse en cours..." : "Générer mes Recommandations IA"}
+                  {loading ? "Analyse en cours..." : "Découvrir mes filières"}
                 </button>
               </form>
             </div>
@@ -130,55 +194,134 @@ export default function App() {
 
           <section className="lg:col-span-5 space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
+              <div className="rounded-lg p-4 text-sm font-sans" style={{ backgroundColor: ACCENT_SOFT, color: ACCENT, border: `1px solid ${ACCENT}` }}>
                 {error}
               </div>
             )}
 
-            {!results && !loading && !error && (
-              <div className="bg-white border border-slate-200 rounded-xl p-8 text-center flex flex-col items-center justify-center min-h-[380px] shadow-sm">
-                <h3 className="text-base font-medium text-slate-800">En attente d'analyse</h3>
-                <p className="text-sm text-slate-500 mt-2 max-w-xs">
-                  Saisissez vos notes pour calculer les affinités parmi les 25 filières universitaires.
+            {!results && !loading && !error && !showBacQuestion && !rejected && (
+              <div
+                className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border border-dashed"
+                style={{ borderColor: LINE }}
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Analyse</span>
+                <h3 className="font-display text-lg font-medium mt-2" style={{ color: INK }}>En attente de saisie</h3>
+                <p className="font-sans text-sm mt-2 max-w-xs" style={{ color: INK_SOFT }}>
+                  Complétez le bulletin pour calculer vos affinités parmi 25 filières universitaires.
+                </p>
+              </div>
+            )}
+
+            {showBacQuestion && (
+              <div
+                className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border space-y-6"
+                style={{ borderColor: ACCENT }}
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: ACCENT }}>Vérification</span>
+                <h3 className="font-display text-lg font-medium" style={{ color: INK }}>
+                  Vous êtes sûr que vous avez été admis(e) au bac ?
+                </h3>
+                <p className="font-sans text-sm max-w-xs" style={{ color: INK_SOFT }}>
+                  Votre moyenne actuelle est de <span className="font-semibold" style={{ color: ACCENT }}>{moyenne}/20</span>.
+                </p>
+                <div className="flex gap-4 w-full max-w-xs pt-2">
+                  <button
+                    type="button"
+                    onClick={handleConfirmBac}
+                    className="flex-1 py-3 px-4 rounded font-mono text-xs uppercase tracking-[0.1em] font-medium transition-colors"
+                    style={{ backgroundColor: INK, color: PAPER }}
+                    onMouseEnter={e => { e.currentTarget.style.backgroundColor = ACCENT; }}
+                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = INK; }}
+                  >
+                    OUI
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRejectBac}
+                    className="flex-1 py-3 px-4 rounded font-mono text-xs uppercase tracking-[0.1em] font-medium border transition-colors"
+                    style={{ borderColor: LINE, color: INK }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = LINE; e.currentTarget.style.color = INK; }}
+                  >
+                    NON
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {rejected && (
+              <div
+                className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border"
+                style={{ borderColor: LINE }}
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Résultat</span>
+                <h3 className="font-display text-xl font-medium mt-3" style={{ color: ACCENT }}>
+                  Réessayez l'année prochaine, bon courage ! 🤣
+                </h3>
+              </div>
+            )}
+
+            {loading && !results && (
+              <div
+                className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border"
+                style={{ borderColor: LINE }}
+              >
+                <div className="w-10 h-10 rounded-full border-2 animate-spin" style={{ borderColor: LINE, borderTopColor: ACCENT }} />
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-4" style={{ color: INK_SOFT }}>
+                  Calcul des affinités...
                 </p>
               </div>
             )}
 
             {results && (
-              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
-                <div className="pb-4 border-b border-slate-100">
-                  <h2 className="text-lg font-semibold text-slate-900">Top 3 Recommandations</h2>
-                  <p className="text-xs text-slate-500 mt-1">Classé parmi 25 filières potentielles</p>
+              <div className="bg-white rounded-lg p-6 border space-y-6" style={{ borderColor: LINE }}>
+                <div className="pb-4 border-b" style={{ borderColor: LINE }}>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
+                    Top 3 · 25 filières possibles
+                  </span>
+                  <h2 className="font-display text-lg font-medium mt-1" style={{ color: INK }}>Recommandations</h2>
                 </div>
 
                 <div className="space-y-4">
                   {results.map((rec, index) => {
                     const isTop1 = index === 0;
                     return (
-                      <div 
+                      <div
                         key={rec.rang}
-                        className={`p-4 rounded-lg border ${
-                          isTop1 ? "bg-slate-50 border-blue-600" : "bg-white border-slate-200"
-                        }`}
+                        className="p-4 rounded-lg border"
+                        style={{
+                          backgroundColor: isTop1 ? ACCENT_SOFT : '#FFFFFF',
+                          borderColor: isTop1 ? ACCENT : LINE
+                        }}
                       >
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <span className="px-2 py-0.5 text-xs font-semibold text-slate-700 bg-slate-200 rounded">
-                              #{rec.rang}
-                            </span>
-                            <h3 className="font-medium text-slate-900 text-sm">
+                            <div
+                              className="w-7 h-7 rounded-full flex items-center justify-center font-mono text-[11px] font-semibold shrink-0"
+                              style={
+                                isTop1
+                                  ? { border: `2px solid ${ACCENT}`, color: ACCENT }
+                                  : { border: `1px solid ${LINE}`, color: INK_SOFT }
+                              }
+                            >
+                              {rec.rang}
+                            </div>
+                            <h3 className="font-sans font-medium text-sm" style={{ color: INK }}>
                               {rec.filiere}
                             </h3>
                           </div>
-                          <span className="text-sm font-semibold text-blue-600 font-mono">
+                          <span
+                            className="font-mono text-lg font-semibold shrink-0 pl-2"
+                            style={{ color: isTop1 ? ACCENT : INK }}
+                          >
                             {rec.probabilite}%
                           </span>
                         </div>
 
-                        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden mt-3">
-                          <div 
-                            className={`h-full ${isTop1 ? "bg-blue-600" : "bg-slate-600"}`}
-                            style={{ width: `${rec.probabilite}%` }}
+                        <div className="w-full h-1 rounded-full overflow-hidden" style={{ backgroundColor: LINE }}>
+                          <div
+                            className="h-full rounded-full"
+                            style={{ width: `${rec.probabilite}%`, backgroundColor: isTop1 ? ACCENT : INK_SOFT }}
                           />
                         </div>
                       </div>
