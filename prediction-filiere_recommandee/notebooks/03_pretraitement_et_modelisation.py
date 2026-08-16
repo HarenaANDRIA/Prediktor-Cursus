@@ -13,7 +13,7 @@ from xgboost import XGBClassifier
 # Interrupteur unique pour activer/desactiver le garde-fou metier (voir bloc
 # GARDE-FOU en bas du fichier). Passer a False pour tester le modele brut,
 # sans aucune contrainte metier appliquee sur les predictions.
-APPLIQUER_GARDE_FOU = False
+APPLIQUER_GARDE_FOU = True
 
 df = pd.read_csv('data/processed/dataset_cleaned.csv', sep=';', decimal=',')
 notes_cols = [col for col in df.columns if col not in ["filiere_recommandee", "serie"]]
