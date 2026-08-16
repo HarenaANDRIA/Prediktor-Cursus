@@ -256,7 +256,7 @@ export default function App() {
               >
                 <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Résultat</span>
                 <h3 className="font-display text-xl font-medium mt-3" style={{ color: ACCENT }}>
-                  Réessayez l'année prochaine, bon courage ! 🤣
+                  Réessayez l'année prochaine, bon courage !
                 </h3>
               </div>
             )}
