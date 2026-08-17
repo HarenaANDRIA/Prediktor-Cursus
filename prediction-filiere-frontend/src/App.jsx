@@ -140,24 +140,34 @@ const createDefaultModuleNotes = (filiereKey) => {
 };
 
 const SERIES = {
-  aucune: { label: 'Aucune', coef5: [], coef4: [], coef3: [] },
+  aucune: { label: 'Aucune', coef6: [], coef5: [], coef4: [], coef3: [] },
   scientifique: {
     label: 'Scientifique',
-    coef5: ['mathematiques', 'physique', 'chimie', 'statistiques_et_probabilites'],
+    coef6: ['mathematiques'],
+    coef5: ['physique', 'chimie', 'statistiques_et_probabilites'],
     coef4: ['test_psychotechnique', 'science_de_la_vie_et_de_la_terre'],
     coef3: [],
   },
   litteraire: {
     label: 'Littéraire',
-    coef5: ['francais', 'anglais'],
+    coef6: ['francais', 'anglais'],
+    coef5: [],
     coef4: ['philosophie', 'histoire_et_geographie'],
     coef3: ['statistiques_et_probabilites', 'test_psychotechnique'],
+  },
+  ose: {
+    label: 'OSE',
+    coef6: ['statistiques_et_probabilites'],
+    coef5: [],
+    coef4: ['histoire_et_geographie', 'francais', 'anglais'],
+    coef3: ['mathematiques'],
   },
 };
 
 function getCoefficient(subjectId, serieKey) {
   const serie = SERIES[serieKey];
   if (!serie || serieKey === 'aucune') return 1;
+  if (serie.coef6 && serie.coef6.includes(subjectId)) return 6;
   if (serie.coef5.includes(subjectId)) return 5;
   if (serie.coef4.includes(subjectId)) return 4;
   if (serie.coef3.includes(subjectId)) return 3;
