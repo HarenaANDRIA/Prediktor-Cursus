@@ -134,11 +134,17 @@ const FILIERES_CONFIG = {
 
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
 
+// Helper pour initialiser les notes de modules universitaires à 10 par défaut
+const createDefaultModuleNotes = (filiereKey) => {
+  const modules = FILIERES_CONFIG[filiereKey]?.modules || [];
+  return modules.reduce((acc, mod) => ({ ...acc, [mod.id]: 10 }), {});
+};
+
 const SERIES = {
   aucune: { label: 'Aucune', coef5: [], coef4: [], coef3: [] },
   scientifique: {
     label: 'Scientifique',
-    coef5: ['mathematiques', 'physique', 'chimie','statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre'],
+    coef5: ['mathematiques', 'physique', 'chimie', 'statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre'],
     coef4: ['test_psychotechnique'],
     coef3: [],
   },
@@ -193,8 +199,9 @@ export default function App() {
   const [serie, setSerie] = useState('aucune');
 
   // États Branches Universitaires
-  const [selectedFiliereKey, setSelectedFiliereKey] = useState(Object.keys(FILIERES_CONFIG)[0]);
-  const [moduleNotes, setModuleNotes] = useState({});
+  const initialFiliereKey = Object.keys(FILIERES_CONFIG)[0];
+  const [selectedFiliereKey, setSelectedFiliereKey] = useState(initialFiliereKey);
+  const [moduleNotes, setModuleNotes] = useState(() => createDefaultModuleNotes(initialFiliereKey));
   const [branchResults, setBranchResults] = useState(null);
   const [branchLoading, setBranchLoading] = useState(false);
   const [branchError, setBranchError] = useState(null);
@@ -215,7 +222,14 @@ export default function App() {
     }));
   };
 
-  const handleReset = () => {
+  const handleFiliereChange = (newFiliereKey) => {
+    setSelectedFiliereKey(newFiliereKey);
+    setModuleNotes(createDefaultModuleNotes(newFiliereKey));
+    setBranchResults(null);
+    setBranchError(null);
+  };
+
+  const handleResetBac = () => {
     setNotes(DEFAULT_NOTES);
     setResults(null);
     setError(null);
@@ -224,9 +238,16 @@ export default function App() {
     setSerie('aucune');
   };
 
-  const values = Object.values(notes).filter(v => typeof v === 'number');
-  const moyNum = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-  const moyenne = values.length ? moyNum.toFixed(2) : '0.00';
+  const handleResetBranch = () => {
+    setModuleNotes(createDefaultModuleNotes(selectedFiliereKey));
+    setBranchResults(null);
+    setBranchError(null);
+  };
+
+  // Calculs Moyenne Post-Bac
+  const valuesBac = Object.values(notes).filter(v => typeof v === 'number');
+  const moyNumBac = valuesBac.length ? valuesBac.reduce((a, b) => a + b, 0) / valuesBac.length : 0;
+  const moyenneBac = valuesBac.length ? moyNumBac.toFixed(2) : '0.00';
 
   const weightedTotals = MATIERES.reduce((acc, m) => {
     const note = notes[m.id];
@@ -236,6 +257,14 @@ export default function App() {
   }, { sumNotes: 0, sumCoefs: 0 });
   const moyennePondereeNum = weightedTotals.sumCoefs ? weightedTotals.sumNotes / weightedTotals.sumCoefs : 0;
   const moyennePonderee = weightedTotals.sumCoefs ? moyennePondereeNum.toFixed(2) : '0.00';
+
+  // Calculs Moyenne Modules Universitaires (Sans Coefficients)
+  const currentModules = FILIERES_CONFIG[selectedFiliereKey]?.modules || [];
+  const moduleValues = currentModules
+    .map(mod => moduleNotes[mod.id])
+    .filter(val => typeof val === 'number');
+  const moyNumModules = moduleValues.length ? moduleValues.reduce((a, b) => a + b, 0) / moduleValues.length : 0;
+  const moyenneModules = moduleValues.length ? moyNumModules.toFixed(2) : '0.00';
 
   const fetchRecommendations = async () => {
     setLoading(true);
@@ -278,14 +307,12 @@ export default function App() {
     setError(null);
     setRejected(false);
 
-    if (moyNum < 10) {
+    if (moyNumBac < 10) {
       setShowBacQuestion(true);
     } else {
       fetchRecommendations();
     }
   };
-
-  const currentModules = FILIERES_CONFIG[selectedFiliereKey]?.modules || [];
 
   return (
     <div className="min-h-screen font-sans pb-16 animate-fadeIn" style={{ backgroundColor: PAPER, color: INK }}>
@@ -296,7 +323,7 @@ export default function App() {
               Prédiktor Cursus
             </h1>
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
-              Système d'orientation · Filières & Branches
+              Système d'orientation · Filières & Spécialisation
             </p>
           </div>
           
@@ -333,7 +360,7 @@ export default function App() {
                   </div>
                   <button
                     type="button"
-                    onClick={handleReset}
+                    onClick={handleResetBac}
                     className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
                     style={{ borderColor: LINE, color: INK_SOFT }}
                   >
@@ -389,7 +416,7 @@ export default function App() {
                   <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
                     <div>
                       <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale</span>
-                      <div className="font-mono text-xl font-bold mt-0.5">{moyenne} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                      <div className="font-mono text-xl font-bold mt-0.5">{moyenneBac} <span className="text-xs font-normal text-slate-400">/20</span></div>
                     </div>
                     {serie !== 'aucune' && (
                       <div className="text-right">
@@ -402,7 +429,7 @@ export default function App() {
                   {showBacQuestion && !rejected && (
                     <div className="p-4 rounded border-l-4 animate-slideDown" style={{ backgroundColor: ACCENT_SOFT, borderColor: ACCENT }}>
                       <p className="text-sm font-medium mb-3" style={{ color: INK }}>
-                        Votre moyenne générale est inférieure à 10 ({moyenne}/20). Avez-vous quand même réussi votre examen du Bac ?
+                        Votre moyenne générale est inférieure à 10 ({moyenneBac}/20). Avez-vous quand même réussi votre examen du Bac ?
                       </p>
                       <div className="flex gap-3">
                         <button
@@ -448,134 +475,139 @@ export default function App() {
             </section>
 
             <section className="lg:col-span-5 space-y-6">
-  {results && (
-    <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
-      {/* En-tête du bloc Recommandations */}
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
-          TOP 3 · RECOMMANDATIONS DE FILIÈRES
-        </p>
-        <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
-          Recommandations
-        </h2>
-        <hr className="mt-4" style={{ borderColor: LINE }} />
-      </div>
-
-      <div className="space-y-5">
-        {results.map((rec, index) => {
-          const isTop1 = index === 0;
-          const prob = parseFloat(rec.probabilite);
-
-          if (isTop1) {
-            return (
-              /* CARD TOP 1 - Style bordeaux avec badge chevauchant et barre de progression rouge */
-              <div
-                key={index}
-                className="relative rounded-2xl p-5 border-2 transition-all duration-300 hover:scale-[1.02] shadow-lg animate-bounce-short"
-                style={{
-                  backgroundColor: '#FDF8F6',
-                  borderColor: ACCENT,
-                  boxShadow: '0 10px 25px -5px rgba(156, 59, 46, 0.15)'
-                }}
-              >
-                {/* Badge MEILLEUR CHOIX chevauchant la bordure supérieure */}
-                <div 
-                  className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white"
-                  style={{ borderColor: ACCENT, color: ACCENT }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
-                  MEILLEUR CHOIX
-                </div>
-
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <span 
-                      className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm"
-                      style={{ backgroundColor: ACCENT }}
-                    >
-                      1
-                    </span>
-                    <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
-                      {rec.filiere}
-                    </h3>
+              {results && (
+                <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
+                      TOP 3 · RECOMMANDATIONS DE FILIÈRES
+                    </p>
+                    <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
+                      Recommandations
+                    </h2>
+                    <hr className="mt-4" style={{ borderColor: LINE }} />
                   </div>
-                  <span className="font-mono text-2xl font-black tracking-tight" style={{ color: ACCENT }}>
-                    {rec.probabilite}%
-                  </span>
-                </div>
 
-                {/* Barre de progression Top 1 */}
-                <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000 ease-out"
-                    style={{
-                      width: `${prob}%`,
-                      backgroundColor: ACCENT
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          }
+                  <div className="space-y-5">
+                    {results.map((rec, index) => {
+                      const isTop1 = index === 0;
+                      const prob = parseFloat(rec.probabilite);
 
-          return (
-            /* CARDS 2 ET 3 - Cartes avec contour neutre et barres grises/sombre */
-            <div
-              key={index}
-              className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
-              style={{ borderColor: LINE }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50" style={{ borderColor: LINE }}>
-                    {rec.rang}
-                  </span>
-                  <h3 className="font-semibold text-base" style={{ color: INK }}>
-                    {rec.filiere}
-                  </h3>
-                </div>
-                <span className="font-mono text-xl font-bold" style={{ color: INK }}>
-                  {rec.probabilite}%
-                </span>
-              </div>
+                      if (isTop1) {
+                        return (
+                          <div
+                            key={index}
+                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 hover:scale-[1.02] shadow-lg animate-bounce-short"
+                            style={{
+                              backgroundColor: '#FDF8F6',
+                              borderColor: ACCENT,
+                              boxShadow: '0 10px 25px -5px rgba(156, 59, 46, 0.15)'
+                            }}
+                          >
+                            <div 
+                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white"
+                              style={{ borderColor: ACCENT, color: ACCENT }}
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
+                              MEILLEUR CHOIX
+                            </div>
 
-              {/* Barre de progression neutre */}
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-1000 ease-out"
-                  style={{
-                    width: `${prob}%`,
-                    backgroundColor: INK
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  )}
-</section>
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-3">
+                                <span 
+                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm"
+                                  style={{ backgroundColor: ACCENT }}
+                                >
+                                  1
+                                </span>
+                                <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
+                                  {rec.filiere}
+                                </h3>
+                              </div>
+                              <span className="font-mono text-2xl font-black tracking-tight" style={{ color: ACCENT }}>
+                                {rec.probabilite}%
+                              </span>
+                            </div>
+
+                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-1000 ease-out"
+                                style={{
+                                  width: `${prob}%`,
+                                  backgroundColor: ACCENT
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={index}
+                          className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
+                          style={{ borderColor: LINE }}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50" style={{ borderColor: LINE }}>
+                                {rec.rang}
+                              </span>
+                              <h3 className="font-semibold text-base" style={{ color: INK }}>
+                                {rec.filiere}
+                              </h3>
+                            </div>
+                            <span className="font-mono text-xl font-bold" style={{ color: INK }}>
+                              {rec.probabilite}%
+                            </span>
+                          </div>
+
+                          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-1000 ease-out"
+                              style={{
+                                width: `${prob}%`,
+                                backgroundColor: INK
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </section>
           </div>
         ) : (
-          /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE */
+          /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE (Harmonisée sur le style Post-Bac sans coefficients) */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <section className="lg:col-span-7 space-y-6">
               <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
-                <h2 className="font-display text-lg font-medium mb-1">Parcours Universitaire & Modules</h2>
-                <p className="font-sans text-sm mb-6 text-slate-500">Sélectionnez votre filière et renseignez vos notes de modules.</p>
-                
-                <form onSubmit={fetchBranchRecommendations} className="space-y-6">
+                <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
                   <div>
-                    <label className="font-mono text-xs uppercase text-slate-500 block mb-2">Votre Filière d'études</label>
+                    <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de modules universitaires</h2>
+                    <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Sélectionnez votre filière et renseignez vos notes sur 20 points.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetBranch}
+                    className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
+                    style={{ borderColor: LINE, color: INK_SOFT }}
+                  >
+                    Réinitialiser
+                  </button>
+                </div>
+
+                <form onSubmit={fetchBranchRecommendations} className="space-y-8">
+                  <div>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] block mb-2" style={{ color: INK_SOFT }}>
+                      Filière universitaire
+                    </span>
                     <select
                       value={selectedFiliereKey}
-                      onChange={e => {
-                        setSelectedFiliereKey(e.target.value);
-                        setModuleNotes({});
-                      }}
-                      className="w-full p-3 border rounded font-sans text-sm focus:outline-none focus:border-slate-800 transition-colors"
-                      style={{ borderColor: LINE }}
+                      onChange={e => handleFiliereChange(e.target.value)}
+                      className="w-full p-3 border rounded font-sans text-sm bg-white focus:outline-none focus:border-slate-800 transition-colors"
+                      style={{ borderColor: LINE, color: INK }}
                     >
                       {Object.entries(FILIERES_CONFIG).map(([key, config]) => (
                         <option key={key} value={key}>{config.label}</option>
@@ -583,24 +615,30 @@ export default function App() {
                     </select>
                   </div>
 
-                  <div className="space-y-4">
-                    <h3 className="font-mono text-xs uppercase text-slate-500 tracking-wider">Notes par module universitaire (/20)</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
                     {currentModules.map(mod => (
-                      <div key={mod.id} className="flex justify-between items-center py-2.5 border-b" style={{ borderColor: LINE }}>
-                        <span className="text-sm font-sans">{mod.label}</span>
+                      <div key={mod.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
+                        <label htmlFor={mod.id} className="font-sans text-sm">{mod.label}</label>
                         <input
+                          id={mod.id}
                           type="number"
                           min="0"
                           max="20"
                           step="0.25"
                           value={moduleNotes[mod.id] ?? ''}
                           onChange={e => handleModuleNoteChange(mod.id, e.target.value)}
-                          placeholder="10"
-                          className="font-mono text-right w-16 p-1 border-b-2 focus:outline-none focus:border-slate-800"
+                          className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
                           required
                         />
                       </div>
                     ))}
+                  </div>
+
+                  <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
+                    <div>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale des Modules</span>
+                      <div className="font-mono text-xl font-bold mt-0.5">{moyenneModules} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                    </div>
                   </div>
 
                   {branchError && <p className="text-red-600 text-xs font-mono">{branchError}</p>}
@@ -611,7 +649,7 @@ export default function App() {
                     className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
                     style={{ backgroundColor: INK, color: PAPER }}
                   >
-                    {branchLoading ? "Recherche de la branche..." : "Découvrir ma branche idéale"}
+                    {branchLoading ? "Analyse en cours..." : "Découvrir ma branche idéale"}
                   </button>
                 </form>
               </div>
@@ -619,46 +657,99 @@ export default function App() {
 
             <section className="lg:col-span-5 space-y-6">
               {branchResults && (
-                <div className="bg-white rounded-lg p-6 border shadow-sm space-y-4 animate-fadeIn" style={{ borderColor: LINE }}>
-                  <div className="border-b pb-3" style={{ borderColor: LINE }}>
-                    <h2 className="font-display text-lg font-medium">Branches Spécialisées Recommandées</h2>
-                    <p className="text-xs text-slate-500 font-mono mt-0.5">Basé sur vos notes de modules</p>
+                <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
+                      TOP 3 · RECOMMANDATIONS DE BRANCHES
+                    </p>
+                    <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
+                      Recommandations
+                    </h2>
+                    <hr className="mt-4" style={{ borderColor: LINE }} />
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-5">
                     {branchResults.map((rec, index) => {
                       const isTop1 = index === 0;
-                      return (
-                        <div
-                          key={index}
-                          className={`p-4 rounded-lg border transition-all duration-300 ${
-                            isTop1 
-                              ? 'shadow-md border-slate-900 bg-slate-900 text-white transform scale-[1.02]' 
-                              : 'hover:border-slate-400 bg-white'
-                          }`}
-                          style={!isTop1 ? { borderColor: LINE } : {}}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <span className={`font-mono text-xs font-bold px-2 py-1 rounded ${isTop1 ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'}`}>
-                                #{rec.rang}
-                              </span>
-                              <div>
-                                <h3 className={`font-semibold text-base ${isTop1 ? 'text-white' : 'text-slate-800'}`}>
+                      const prob = parseFloat(rec.probabilite);
+
+                      if (isTop1) {
+                        return (
+                          <div
+                            key={index}
+                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 hover:scale-[1.02] shadow-lg animate-bounce-short"
+                            style={{
+                              backgroundColor: '#FDF8F6',
+                              borderColor: ACCENT,
+                              boxShadow: '0 10px 25px -5px rgba(156, 59, 46, 0.15)'
+                            }}
+                          >
+                            <div 
+                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white"
+                              style={{ borderColor: ACCENT, color: ACCENT }}
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
+                              MEILLEUR CHOIX
+                            </div>
+
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-3">
+                                <span 
+                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm"
+                                  style={{ backgroundColor: ACCENT }}
+                                >
+                                  1
+                                </span>
+                                <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
                                   {rec.branche}
                                 </h3>
-                                {isTop1 && (
-                                  <span className="inline-block mt-1 font-mono text-[10px] uppercase tracking-widest text-emerald-400 font-medium">
-                                    ★ Branche Idéale
-                                  </span>
-                                )}
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <span className={`font-mono text-lg font-bold ${isTop1 ? 'text-emerald-400' : 'text-slate-900'}`}>
+                              <span className="font-mono text-2xl font-black tracking-tight" style={{ color: ACCENT }}>
                                 {rec.probabilite}%
                               </span>
                             </div>
+
+                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-1000 ease-out"
+                                style={{
+                                  width: `${prob}%`,
+                                  backgroundColor: ACCENT
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={index}
+                          className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
+                          style={{ borderColor: LINE }}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50" style={{ borderColor: LINE }}>
+                                {rec.rang}
+                              </span>
+                              <h3 className="font-semibold text-base" style={{ color: INK }}>
+                                {rec.branche}
+                              </h3>
+                            </div>
+                            <span className="font-mono text-xl font-bold" style={{ color: INK }}>
+                              {rec.probabilite}%
+                            </span>
+                          </div>
+
+                          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-1000 ease-out"
+                              style={{
+                                width: `${prob}%`,
+                                backgroundColor: INK
+                              }}
+                            />
                           </div>
                         </div>
                       );
