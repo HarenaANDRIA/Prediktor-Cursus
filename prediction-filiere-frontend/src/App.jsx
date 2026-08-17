@@ -7,7 +7,7 @@ const MATIERES = [
   { id: 'chimie', label: 'Chimie' },
   { id: 'science_de_la_vie_et_de_la_terre', label: 'SVT' },
   { id: 'statistiques_et_probabilites', label: 'Statistiques & Probabilités' },
-  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquée' },
+  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquee' },
   { id: 'francais', label: 'Français' },
   { id: 'anglais', label: 'Anglais' },
   { id: 'philosophie', label: 'Philosophie' },
@@ -17,6 +17,51 @@ const MATIERES = [
 ];
 
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
+
+// --- Système de coefficients (Série Scientifique / Littéraire) ---------------
+// Les coefficients servent à la fois à afficher une "moyenne pondérée" indicative
+// ET à ajuster les notes réellement envoyées au modèle IA (rescalées sur 20).
+// Formule : note_ajustée = note_brute × (coefficient_matière / coefficient_moyen),
+// bornée à [0, 20]. Quand série = "aucune", le coefficient moyen vaut 1 pour
+// toutes les matières -> aucune transformation (comportement identique à avant).
+const SERIES = {
+  aucune: { label: 'Aucune', coefStrong5: [], coefStrong4: [] },
+  scientifique: {
+    label: 'Scientifique',
+    coefStrong5: ['mathematiques'],
+    coefStrong4: ['physique', 'chimie', 'biologie_appliquee_et_biotechnologie', 'science_de_la_vie_et_de_la_terre'],
+  },
+  litteraire: {
+    label: 'Littéraire',
+    coefStrong5: ['francais'],
+    coefStrong4: ['anglais', 'philosophie', 'histoire_et_geographie'],
+  },
+};
+
+function getCoefficient(subjectId, serieKey) {
+  const serie = SERIES[serieKey];
+  if (!serie) return 1;
+  if (serie.coefStrong5.includes(subjectId)) return 5;
+  if (serie.coefStrong4.includes(subjectId)) return 4;
+  if (serieKey === 'aucune') return 1;
+  return 2;
+}
+
+// Construit les notes réellement envoyées au modèle : chaque note est
+// repondérée selon le coefficient de sa matière puis rescalée sur 0-20.
+function computeNotesForModel(notes, serieKey) {
+  const coefs = MATIERES.map(m => getCoefficient(m.id, serieKey));
+  const meanCoef = coefs.reduce((a, b) => a + b, 0) / coefs.length;
+
+  const adjusted = {};
+  MATIERES.forEach(m => {
+    const note = typeof notes[m.id] === 'number' ? notes[m.id] : 0;
+    const coef = getCoefficient(m.id, serieKey);
+    const raw = meanCoef > 0 ? (note * coef) / meanCoef : note;
+    adjusted[m.id] = Math.max(0, Math.min(20, Math.round(raw * 100) / 100));
+  });
+  return adjusted;
+}
 
 // Palette (ledger / bulletin scolaire concept — flat colors only, no gradients)
 const INK = '#1E2A3A';
@@ -33,6 +78,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [showBacQuestion, setShowBacQuestion] = useState(false);
   const [rejected, setRejected] = useState(false);
+  const [serie, setSerie] = useState('aucune');
 
   const handleInputChange = (id, value) => {
     const val = parseFloat(value);
@@ -48,11 +94,22 @@ export default function App() {
     setError(null);
     setShowBacQuestion(false);
     setRejected(false);
+    setSerie('aucune');
   };
 
   const values = Object.values(notes).filter(v => typeof v === 'number');
   const moyNum = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
   const moyenne = values.length ? moyNum.toFixed(2) : '0.00';
+
+  // Moyenne pondérée selon la série choisie (affichage uniquement, cf. note ci-dessus)
+  const weightedTotals = MATIERES.reduce((acc, m) => {
+    const note = notes[m.id];
+    if (typeof note !== 'number') return acc;
+    const coef = getCoefficient(m.id, serie);
+    return { sumNotes: acc.sumNotes + note * coef, sumCoefs: acc.sumCoefs + coef };
+  }, { sumNotes: 0, sumCoefs: 0 });
+  const moyennePondereeNum = weightedTotals.sumCoefs ? weightedTotals.sumNotes / weightedTotals.sumCoefs : 0;
+  const moyennePonderee = weightedTotals.sumCoefs ? moyennePondereeNum.toFixed(2) : '0.00';
 
   const fetchRecommendations = async () => {
     setLoading(true);
@@ -61,7 +118,8 @@ export default function App() {
     setRejected(false);
 
     try {
-      const response = await axios.post('http://localhost:8000/predict', notes);
+      const notesForModel = computeNotesForModel(notes, serie);
+      const response = await axios.post('http://localhost:8000/predict', notesForModel);
       setResults(response.data.recommandations);
     } catch (err) {
       setError("Impossible de contacter le serveur d'IA (http://localhost:8000).");
@@ -147,32 +205,86 @@ export default function App() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-8">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
+                      Série du bac
+                    </span>
+                    {serie !== 'aucune' && (
+                      <span className="font-sans text-xs" style={{ color: INK_SOFT }}>
+                        Moyenne pondérée : <span className="font-mono font-semibold" style={{ color: ACCENT }}>{moyennePonderee}/20</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {Object.entries(SERIES).map(([key, s]) => {
+                      const isActive = serie === key;
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setSerie(key)}
+                          className="flex-1 py-2 px-3 rounded font-mono text-[10px] uppercase tracking-[0.1em] font-medium border transition-colors"
+                          style={
+                            isActive
+                              ? { backgroundColor: INK, color: PAPER, borderColor: INK }
+                              : { backgroundColor: 'transparent', color: INK_SOFT, borderColor: LINE }
+                          }
+                        >
+                          {s.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {serie !== 'aucune' && (
+                    <p className="font-sans text-xs mt-2" style={{ color: INK_SOFT }}>
+                      Coefficients appliqués à la moyenne pondérée (indicative) : matières fortes ×4/×5, autres ×2.
+                      Les notes envoyées au modèle IA sont ajustées selon ces coefficients, puis ramenées sur 20.
+                    </p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
-                  {MATIERES.map(m => (
-                    <div
-                      key={m.id}
-                      className="flex items-baseline justify-between py-2.5 border-b"
-                      style={{ borderColor: LINE, borderBottomStyle: 'dotted' }}
-                    >
-                      <label htmlFor={m.id} className="font-sans text-sm pr-3" style={{ color: INK }}>
-                        {m.label}
-                      </label>
-                      <input
-                        id={m.id}
-                        type="number"
-                        min="0"
-                        max="20"
-                        step="0.25"
-                        value={notes[m.id]}
-                        onChange={e => handleInputChange(m.id, e.target.value)}
-                        className="font-mono text-base font-semibold text-right min-w-[4.5rem] w-auto bg-transparent border-0 border-b-2 focus:outline-none px-1"
-                        style={{ color: INK, borderColor: 'transparent' }}
-                        onFocus={e => { e.currentTarget.style.borderColor = ACCENT; }}
-                        onBlur={e => { e.currentTarget.style.borderColor = 'transparent'; }}
-                        required
-                      />
-                    </div>
-                  ))}
+                  {MATIERES.map(m => {
+                    const coef = getCoefficient(m.id, serie);
+                    return (
+                      <div
+                        key={m.id}
+                        className="flex items-baseline justify-between py-2.5 border-b"
+                        style={{ borderColor: LINE, borderBottomStyle: 'dotted' }}
+                      >
+                        <label htmlFor={m.id} className="font-sans text-sm pr-3 flex items-center gap-2" style={{ color: INK }}>
+                          {m.label}
+                          {serie !== 'aucune' && (
+                            <span
+                              className="font-mono text-[9px] px-1.5 py-0.5 rounded-full border"
+                              style={
+                                coef >= 4
+                                  ? { color: ACCENT, borderColor: ACCENT, backgroundColor: ACCENT_SOFT }
+                                  : { color: INK_SOFT, borderColor: LINE }
+                              }
+                            >
+                              ×{coef}
+                            </span>
+                          )}
+                        </label>
+                        <input
+                          id={m.id}
+                          type="number"
+                          min="0"
+                          max="20"
+                          step="0.25"
+                          value={notes[m.id]}
+                          onChange={e => handleInputChange(m.id, e.target.value)}
+                          className="font-mono text-base font-semibold text-right min-w-[4.5rem] w-auto bg-transparent border-0 border-b-2 focus:outline-none px-1"
+                          style={{ color: INK, borderColor: 'transparent' }}
+                          onFocus={e => { e.currentTarget.style.borderColor = ACCENT; }}
+                          onBlur={e => { e.currentTarget.style.borderColor = 'transparent'; }}
+                          required
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <button
