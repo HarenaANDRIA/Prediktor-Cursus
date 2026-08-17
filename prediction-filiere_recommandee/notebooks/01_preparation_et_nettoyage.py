@@ -9,13 +9,11 @@ df = pd.read_csv(data_path, sep=';')
 # Nettoyage des doublons
 df = df.drop_duplicates()
 
-# Les 15 matières réelles du dataset
+# Les 12 matières réelles du dataset
 feature_cols = [
     'mathematiques', 'physique', 'chimie', 'francais', 'histoire_et_geographie',
     'philosophie', 'anglais', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre',
-    'informatique', 'economie_generale', 'education_physique_et_sportive',
-    'dessin_technique_et_arts_appliques', 'statistiques_et_probabilites',
-    'biologie_appliquee_et_biotechnologie'
+    'dessin_technique', 'statistiques_et_probabilites', 'biologie_appliquee_et_biotechnologie'
 ]
 
 # Conversion numérique

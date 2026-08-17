@@ -28,7 +28,7 @@ try:
 except Exception as e:
     raise RuntimeError(f"Erreur de chargement des modèles ML : {e}")
 
-# Schéma Pydantic incluant l'ensemble des 15 matières
+# Schéma Pydantic incluant l'ensemble des 12 matières
 class NotesEtudiant(BaseModel):
     mathematiques: float = Field(..., ge=0, le=20)
     physique: float = Field(..., ge=0, le=20)
@@ -39,10 +39,7 @@ class NotesEtudiant(BaseModel):
     anglais: float = Field(..., ge=0, le=20)
     test_psychotechnique: float = Field(..., ge=0, le=20)
     science_de_la_vie_et_de_la_terre: float = Field(..., ge=0, le=20)
-    informatique: float = Field(..., ge=0, le=20)
-    economie_generale: float = Field(..., ge=0, le=20)
-    education_physique_et_sportive: float = Field(..., ge=0, le=20)
-    dessin_technique_et_arts_appliques: float = Field(..., ge=0, le=20)
+    dessin_technique: float = Field(..., ge=0, le=20)
     statistiques_et_probabilites: float = Field(..., ge=0, le=20)
     biologie_appliquee_et_biotechnologie: float = Field(..., ge=0, le=20)
 

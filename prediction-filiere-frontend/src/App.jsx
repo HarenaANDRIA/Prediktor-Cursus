@@ -6,17 +6,14 @@ const MATIERES = [
   { id: 'physique', label: 'Physique' },
   { id: 'chimie', label: 'Chimie' },
   { id: 'science_de_la_vie_et_de_la_terre', label: 'SVT' },
-  { id: 'informatique', label: 'Informatique' },
   { id: 'statistiques_et_probabilites', label: 'Statistiques & Probabilités' },
   { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquee' },
   { id: 'francais', label: 'Français' },
   { id: 'anglais', label: 'Anglais' },
   { id: 'philosophie', label: 'Philosophie' },
   { id: 'histoire_et_geographie', label: 'Histoire - Géographie' },
-  { id: 'economie_generale', label: 'Économie Générale' },
   { id: 'test_psychotechnique', label: 'Test Psychotechnique' },
-  { id: 'dessin_technique_et_arts_appliques', label: 'Dessin Technique & Arts' },
-  { id: 'education_physique_et_sportive', label: 'EPS' }
+  { id: 'dessin_technique', label: 'Dessin Technique' }
 ];
 
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
@@ -111,7 +108,7 @@ export default function App() {
               Prédiktor Cursus
             </h1>
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
-              Système d'orientation · 15 matières
+              Système d'orientation · 12 matières
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -207,7 +204,7 @@ export default function App() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Analyse</span>
                 <h3 className="font-display text-lg font-medium mt-2" style={{ color: INK }}>En attente de saisie</h3>
                 <p className="font-sans text-sm mt-2 max-w-xs" style={{ color: INK_SOFT }}>
-                  Complétez le bulletin pour calculer vos affinités parmi 25 filières universitaires.
+                  Complétez le bulletin pour calculer vos affinités parmi 10 filières universitaires.
                 </p>
               </div>
             )}
@@ -277,7 +274,7 @@ export default function App() {
               <div className="bg-white rounded-lg p-6 border space-y-6" style={{ borderColor: LINE }}>
                 <div className="pb-4 border-b" style={{ borderColor: LINE }}>
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
-                    Top 3 · 25 filières possibles
+                    Top 3 · 10 filières possibles
                   </span>
                   <h2 className="font-display text-lg font-medium mt-1" style={{ color: INK }}>Recommandations</h2>
                 </div>
