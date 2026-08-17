@@ -13,7 +13,7 @@ df = df.drop_duplicates()
 feature_cols = [
     'mathematiques', 'physique', 'chimie', 'francais', 'histoire_et_geographie',
     'philosophie', 'anglais', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre',
-    'dessin_technique', 'statistiques_et_probabilites', 'biologie_appliquee_et_biotechnologie'
+    'statistiques_et_probabilites'
 ]
 
 # Conversion numérique

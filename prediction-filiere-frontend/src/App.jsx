@@ -5,84 +5,37 @@ const MATIERES = [
   { id: 'mathematiques', label: 'Mathématiques' },
   { id: 'physique', label: 'Physique' },
   { id: 'chimie', label: 'Chimie' },
-  { id: 'science_de_la_vie_et_de_la_terre', label: 'SVT' },
-  { id: 'statistiques_et_probabilites', label: 'Statistiques & Probabilités' },
-  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquée' },
+  { id: 'science_de_la_vie_et_de_la_terre', label: 'Science de la vie et de la terre' },
+  { id: 'statistiques_et_probabilites', label: 'Statistiques et Probabilités' },
   { id: 'francais', label: 'Français' },
   { id: 'anglais', label: 'Anglais' },
   { id: 'philosophie', label: 'Philosophie' },
-  { id: 'histoire_et_geographie', label: 'Histoire - Géographie' },
-  { id: 'test_psychotechnique', label: 'Test Psychotechnique' },
-  { id: 'dessin_technique', label: 'Dessin Technique' }
-];
-
-const FILIERES_CONDITIONS = [
-  {
-    nom: 'Cybersécurité et réseaux',
-    matieresCles: ['mathematiques', 'test_psychotechnique']
-  },
-  {
-    nom: 'Science des données et intelligence artificielle',
-    matieresCles: ['mathematiques', 'statistiques_et_probabilites', 'test_psychotechnique']
-  },
-  {
-    nom: 'Médecine et pharmacie',
-    matieresCles: ['biologie_appliquee_et_biotechnologie', 'chimie']
-  },
-  {
-    nom: 'Tourisme et hôtellerie',
-    matieresCles: ['histoire_et_geographie', 'francais', 'anglais']
-  },
-  {
-    nom: 'Langues et communication',
-    matieresCles: ['francais', 'anglais']
-  },
-  {
-    nom: 'Sociologie',
-    matieresCles: ['philosophie', 'francais', 'anglais']
-  },
-  {
-    nom: 'Science actuarielle',
-    matieresCles: ['mathematiques', 'statistiques_et_probabilites', 'francais', 'anglais']
-  },
-  {
-    nom: 'Ingénierie et science',
-    matieresCles: ['mathematiques', 'physique', 'chimie', 'dessin_technique', 'test_psychotechnique']
-  },
-  {
-    nom: 'Droit et sciences politiques',
-    matieresCles: ['histoire_et_geographie', 'francais', 'anglais', 'test_psychotechnique']
-  },
-  {
-    nom: 'Psychologie',
-    matieresCles: ['philosophie', 'test_psychotechnique']
-  }
+  { id: 'histoire_et_geographie', label: 'Histoire et Géographie' },
+  { id: 'test_psychotechnique', label: 'Test Psychotechnique' }
 ];
 
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
 
 const SERIES = {
-  aucune: { label: 'Aucune', coef6:[], coef5: [], coef4: [], coef3: [] },
+  aucune: { label: 'Aucune', coef5: [], coef4: [], coef3: [] },
   scientifique: {
     label: 'Scientifique',
-    coef6:[],
-    coef5: ['mathematiques', 'physique', 'chimie', 'test_psychotechnique', 'statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre', 'biologie_appliquee_et_biotechnologie'],
-    coef4: [],
-    coef3: ['dessin_technique', 'francais', 'anglais'],
+    coef5: ['mathematiques', 'physique', 'chimie','statistiques_et_probabilites', 
+            'science_de_la_vie_et_de_la_terre'],
+    coef4: ['test_psychotechnique'],
+    coef3: [],
   },
   litteraire: {
     label: 'Littéraire',
-    coef6:[],
     coef5: ['francais', 'anglais'],
     coef4: ['philosophie', 'histoire_et_geographie'],
-    coef3: ['statistiques_et_probabilites'],
+    coef3: ['statistiques_et_probabilites', 'test_psychotechnique'],
   },
 };
 
 function getCoefficient(subjectId, serieKey) {
   const serie = SERIES[serieKey];
   if (!serie || serieKey === 'aucune') return 1;
-  if (serie.coef6.includes(subjectId)) return 6;
   if (serie.coef5.includes(subjectId)) return 5;
   if (serie.coef4.includes(subjectId)) return 4;
   if (serie.coef3.includes(subjectId)) return 3;
@@ -407,7 +360,7 @@ export default function App() {
               >
                 <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: ACCENT }}>Vérification</span>
                 <h3 className="font-display text-lg font-medium" style={{ color: INK }}>
-                  Vous êtes sûr que vous avez été admis(e) au bac ?
+                  Êtes-vous sûr que vous avez été admis(es) au bac ?
                 </h3>
                 <p className="font-sans text-sm max-w-xs" style={{ color: INK_SOFT }}>
                   Votre moyenne actuelle est de <span className="font-semibold" style={{ color: ACCENT }}>{moyenne}/20</span>.

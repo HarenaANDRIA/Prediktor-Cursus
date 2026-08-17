@@ -39,9 +39,7 @@ class NotesEtudiant(BaseModel):
     anglais: float = Field(..., ge=0, le=20)
     test_psychotechnique: float = Field(..., ge=0, le=20)
     science_de_la_vie_et_de_la_terre: float = Field(..., ge=0, le=20)
-    dessin_technique: float = Field(..., ge=0, le=20)
     statistiques_et_probabilites: float = Field(..., ge=0, le=20)
-    biologie_appliquee_et_biotechnologie: float = Field(..., ge=0, le=20)
 
 @app.post("/predict")
 def predict(notes: NotesEtudiant):

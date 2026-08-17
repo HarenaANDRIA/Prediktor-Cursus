@@ -13,38 +13,37 @@ import os
 RNG_SEED = 42
 rng = np.random.default_rng(RNG_SEED)
 
-# ---------------------------------------------------------------------------
-# 1. Les 12 matières -- exactement les colonnes du dataset importé
-# ---------------------------------------------------------------------------
 FEATURE_COLS = [
     'mathematiques', 'physique', 'chimie', 'francais', 'histoire_et_geographie',
     'philosophie', 'anglais', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre',
-    'dessin_technique', 'statistiques_et_probabilites', 'biologie_appliquee_et_biotechnologie'
+    'statistiques_et_probabilites'
 ]
 
-# ---------------------------------------------------------------------------
-# 2. Les 10 filières et leurs matières pertinentes (conditions.pdf)
-# ---------------------------------------------------------------------------
 FILIERES = {
-    'cybersecurite_et_reseaux': {
-        'required': ['mathematiques', 'test_psychotechnique'],
-        'flavor': [],
-        'single_rule': None,
-    },
     'science_des_donnees_et_intelligence_artificielle': {
         'required': ['mathematiques', 'statistiques_et_probabilites', 'test_psychotechnique'],
         'flavor': [],
         'single_rule': None,
     },
     'medecine_et_pharmacie': {
-        'required': ['biologie_appliquee_et_biotechnologie', 'chimie'],
-        'flavor': ['science_de_la_vie_et_de_la_terre'],
-        'single_rule': ['biologie_appliquee_et_biotechnologie', 'chimie'],
+        'required': ['science_de_la_vie_et_de_la_terre', 'chimie'],
+        'flavor': [],
+        'single_rule': ['science_de_la_vie_et_de_la_terre', 'chimie'],
+    },
+    'agronomie_et_biotechnologie': {
+        'required': ['mathematiques', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre'],
+        'flavor': [],
+        'single_rule': None,
+    },
+    'sciences_environnementales_et_science_marine': {
+        'required': ['mathematiques', 'science_de_la_vie_et_de_la_terre'],
+        'flavor': [],
+        'single_rule': None,
     },
     'tourisme_et_hotellerie': {
         'required': ['histoire_et_geographie', 'francais', 'anglais'],
         'flavor': [],
-        'single_rule': ['histoire_et_geographie'],
+        'single_rule': None,
     },
     'langues_et_communication': {
         'required': ['francais', 'anglais'],
@@ -56,15 +55,15 @@ FILIERES = {
         'flavor': [],
         'single_rule': ['philosophie'],
     },
-    'science_actuarielle': {
-        'required': ['mathematiques', 'francais', 'anglais', 'statistiques_et_probabilites'],
+    'sciences_actuarielles': {
+        'required': ['francais', 'anglais', 'statistiques_et_probabilites'],
         'flavor': [],
-        'single_rule': None,
+        'single_rule': ['statistiques_et_probabilites'],
     },
-    'ingenierie_et_science': {
-        'required': ['mathematiques', 'physique', 'chimie', 'dessin_technique', 'test_psychotechnique'],
+    'ingenierie_et_science_generale': {
+        'required': ['mathematiques', 'physique', 'chimie', 'test_psychotechnique'],
         'flavor': [],
-        'single_rule': ['mathematiques', 'physique', 'dessin_technique'],
+        'single_rule': ['mathematiques', 'physique'],
     },
     'droit_et_sciences_politiques': {
         'required': ['histoire_et_geographie', 'francais', 'anglais', 'test_psychotechnique'],
@@ -76,10 +75,14 @@ FILIERES = {
         'flavor': [],
         'single_rule': ['test_psychotechnique'],
     },
+    'anthropologie_ou_archeologie': {
+        'required': ['science_de_la_vie_et_de_la_terre', 'histoire_et_geographie'],
+        'flavor': [],
+        'single_rule': None,
+    },
 }
 
-N_PER_CLASS = 300  # 10 filières x 300 = 3000 lignes (>= 2000 requis, réparties strictement)
-
+N_PER_CLASS = 300  # 10 filières x 300 = 3000 lignes
 NOISE_STD = 1.6
 
 
