@@ -315,7 +315,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-sans pb-16 animate-fadeIn" style={{ backgroundColor: PAPER, color: INK }}>
-      {/* Styles des animations provenant de Exemple.jsx */}
       <style>{`
         @keyframes popIn {
           0% { transform: scale(0.96); opacity: 0; }
@@ -328,7 +327,6 @@ export default function App() {
           50% { box-shadow: 0 6px 28px 4px rgba(156, 59, 46, 0.45); }
         }
 
-        /* Effet de bounce récupéré depuis Exemple.jsx */
         @keyframes continuousBounce {
           0%, 100% {
             transform: translateY(0);
@@ -550,14 +548,14 @@ export default function App() {
                               className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
                               style={{ borderColor: ACCENT, color: ACCENT }}
                             >
-                              <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
+                              <span className="w-1.5 h-1.5 rounded-full animate-ping shrink-0" style={{ backgroundColor: ACCENT }} />
                               MEILLEUR CHOIX
                             </div>
 
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between gap-3 mb-3">
+                              <div className="flex items-center gap-3 min-w-0">
                                 <span 
-                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm"
+                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm shrink-0"
                                   style={{ backgroundColor: ACCENT }}
                                 >
                                   1
@@ -566,7 +564,7 @@ export default function App() {
                                   {rec.filiere}
                                 </h3>
                               </div>
-                              <span className="font-mono text-2xl font-black tracking-tight" style={{ color: ACCENT }}>
+                              <span className="font-mono text-2xl font-black tracking-tight shrink-0" style={{ color: ACCENT }}>
                                 {rec.probabilite}%
                               </span>
                             </div>
@@ -590,16 +588,16 @@ export default function App() {
                           className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
                           style={{ borderColor: LINE }}
                         >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-3">
-                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50" style={{ borderColor: LINE }}>
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50 shrink-0" style={{ borderColor: LINE }}>
                                 {rec.rang}
                               </span>
                               <h3 className="font-semibold text-base" style={{ color: INK }}>
                                 {rec.filiere}
                               </h3>
                             </div>
-                            <span className="font-mono text-xl font-bold" style={{ color: INK }}>
+                            <span className="font-mono text-xl font-bold shrink-0" style={{ color: INK }}>
                               {rec.probabilite}%
                             </span>
                           </div>
@@ -730,14 +728,14 @@ export default function App() {
                               className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
                               style={{ borderColor: ACCENT, color: ACCENT }}
                             >
-                              <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
+                              <span className="w-1.5 h-1.5 rounded-full animate-ping shrink-0" style={{ backgroundColor: ACCENT }} />
                               MEILLEUR CHOIX
                             </div>
 
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between gap-3 mb-3">
+                              <div className="flex items-center gap-3 min-w-0">
                                 <span 
-                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm"
+                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm shrink-0"
                                   style={{ backgroundColor: ACCENT }}
                                 >
                                   1
@@ -746,7 +744,7 @@ export default function App() {
                                   {rec.branche}
                                 </h3>
                               </div>
-                              <span className="font-mono text-2xl font-black tracking-tight" style={{ color: ACCENT }}>
+                              <span className="font-mono text-2xl font-black tracking-tight shrink-0" style={{ color: ACCENT }}>
                                 {rec.probabilite}%
                               </span>
                             </div>
@@ -770,16 +768,16 @@ export default function App() {
                           className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
                           style={{ borderColor: LINE }}
                         >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-3">
-                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50" style={{ borderColor: LINE }}>
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50 shrink-0" style={{ borderColor: LINE }}>
                                 {rec.rang}
                               </span>
                               <h3 className="font-semibold text-base" style={{ color: INK }}>
                                 {rec.branche}
                               </h3>
                             </div>
-                            <span className="font-mono text-xl font-bold" style={{ color: INK }}>
+                            <span className="font-mono text-xl font-bold shrink-0" style={{ color: INK }}>
                               {rec.probabilite}%
                             </span>
                           </div>
