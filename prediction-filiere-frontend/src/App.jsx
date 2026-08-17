@@ -189,14 +189,13 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('bac');
   const [isTranslating, setIsTranslating] = useState(false);
 
-  // Gestion douce du changement d'onglet
   const handleTabSwitch = (tab) => {
     if (activeTab === tab) return;
     setIsTranslating(true);
     setTimeout(() => {
       setActiveTab(tab);
       setIsTranslating(false);
-    }, 150); // Pause imperceptible pour garantir le re-trigger de l'animation CSS
+    }, 150);
   };
 
   // États Post-Bac
@@ -327,7 +326,6 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans pb-16" style={{ backgroundColor: PAPER, color: INK }}>
       <style>{`
-        /* Animation très lente (1.8s) et très fluide */
         @keyframes ultraSlowFadeIn {
           0% { 
             opacity: 0; 
@@ -396,19 +394,28 @@ export default function App() {
             </p>
           </div>
           
-          <div className="flex gap-2 bg-slate-100 p-1 rounded-lg border shadow-inner" style={{ borderColor: LINE }}>
+          {/* CONTENEUR BOUTONS AVEC EFFET SLIDE D'ARRIÈRE-PLAN */}
+          <div className="relative flex bg-slate-100 p-1 rounded-lg border shadow-inner" style={{ borderColor: LINE }}>
+            {/* Fond noir glissant */}
+            <div
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-slate-800 rounded shadow-md transition-transform duration-500 ease-in-out"
+              style={{
+                transform: activeTab === 'bac' ? 'translateX(0)' : 'translateX(100%)'
+              }}
+            />
+
             <button
               onClick={() => handleTabSwitch('bac')}
-              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-300 ${
-                activeTab === 'bac' ? 'bg-slate-800 text-white shadow-md scale-[1.02]' : 'text-slate-600 hover:text-slate-900'
+              className={`relative z-10 px-4 py-2 rounded text-xs font-mono transition-colors duration-300 ${
+                activeTab === 'bac' ? 'text-white' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Orientation Post-Bac
             </button>
             <button
               onClick={() => handleTabSwitch('branche')}
-              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-300 ${
-                activeTab === 'branche' ? 'bg-slate-800 text-white shadow-md scale-[1.02]' : 'text-slate-600 hover:text-slate-900'
+              className={`relative z-10 px-4 py-2 rounded text-xs font-mono transition-colors duration-300 ${
+                activeTab === 'branche' ? 'text-white' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Spécialisation Branche
@@ -648,7 +655,6 @@ export default function App() {
               </section>
             </div>
           ) : (
-            /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE */
             <div key="branche-tab" className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-tab-slow">
               <section className="lg:col-span-7 space-y-6">
                 <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
