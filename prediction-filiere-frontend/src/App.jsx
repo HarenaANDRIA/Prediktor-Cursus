@@ -134,7 +134,6 @@ const FILIERES_CONFIG = {
 
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
 
-// Helper pour initialiser les notes de modules universitaires à 10 par défaut
 const createDefaultModuleNotes = (filiereKey) => {
   const modules = FILIERES_CONFIG[filiereKey]?.modules || [];
   return modules.reduce((acc, mod) => ({ ...acc, [mod.id]: 10 }), {});
@@ -144,8 +143,8 @@ const SERIES = {
   aucune: { label: 'Aucune', coef5: [], coef4: [], coef3: [] },
   scientifique: {
     label: 'Scientifique',
-    coef5: ['mathematiques', 'physique', 'chimie', 'statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre'],
-    coef4: ['test_psychotechnique'],
+    coef5: ['mathematiques', 'physique', 'chimie', 'statistiques_et_probabilites'],
+    coef4: ['test_psychotechnique', 'science_de_la_vie_et_de_la_terre'],
     coef3: [],
   },
   litteraire: {
@@ -258,7 +257,7 @@ export default function App() {
   const moyennePondereeNum = weightedTotals.sumCoefs ? weightedTotals.sumNotes / weightedTotals.sumCoefs : 0;
   const moyennePonderee = weightedTotals.sumCoefs ? moyennePondereeNum.toFixed(2) : '0.00';
 
-  // Calculs Moyenne Modules Universitaires (Sans Coefficients)
+  // Calculs Moyenne Modules Universitaires
   const currentModules = FILIERES_CONFIG[selectedFiliereKey]?.modules || [];
   const moduleValues = currentModules
     .map(mod => moduleNotes[mod.id])
@@ -316,6 +315,51 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-sans pb-16 animate-fadeIn" style={{ backgroundColor: PAPER, color: INK }}>
+      {/* Styles des animations provenant de Exemple.jsx */}
+      <style>{`
+        @keyframes popIn {
+          0% { transform: scale(0.96); opacity: 0; }
+          60% { transform: scale(1.02); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 4px 20px -2px rgba(156, 59, 46, 0.25); }
+          50% { box-shadow: 0 6px 28px 4px rgba(156, 59, 46, 0.45); }
+        }
+
+        /* Effet de bounce récupéré depuis Exemple.jsx */
+        @keyframes continuousBounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-6px);
+          }
+        }
+
+        @keyframes shine {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        .animate-top1 {
+          animation: 
+            popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+            pulseGlow 3s infinite ease-in-out,
+            continuousBounce 2.5s infinite ease-in-out;
+        }
+
+        .shine-effect::after {
+          content: '';
+          position: absolute;
+          top: 0; right: 0; bottom: 0; left: 0;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+          transform: translateX(-100%);
+          animation: shine 2s infinite 0.8s;
+        }
+      `}</style>
+
       <header className="sticky top-0 z-50 border-b backdrop-blur-md bg-white/80" style={{ borderColor: LINE }}>
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div>
@@ -323,7 +367,7 @@ export default function App() {
               Prédiktor Cursus
             </h1>
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
-              Système d'orientation · Filières & Spécialisation
+              Système d'orientation · Filières & Branches
             </p>
           </div>
           
@@ -496,15 +540,14 @@ export default function App() {
                         return (
                           <div
                             key={index}
-                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 hover:scale-[1.02] shadow-lg animate-bounce-short"
+                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 shadow-lg animate-top1"
                             style={{
                               backgroundColor: '#FDF8F6',
-                              borderColor: ACCENT,
-                              boxShadow: '0 10px 25px -5px rgba(156, 59, 46, 0.15)'
+                              borderColor: ACCENT
                             }}
                           >
                             <div 
-                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white"
+                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
                               style={{ borderColor: ACCENT, color: ACCENT }}
                             >
                               <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
@@ -528,9 +571,9 @@ export default function App() {
                               </span>
                             </div>
 
-                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden relative">
                               <div
-                                className="h-full rounded-full transition-all duration-1000 ease-out"
+                                className="h-full rounded-full transition-all duration-1000 ease-out shine-effect"
                                 style={{
                                   width: `${prob}%`,
                                   backgroundColor: ACCENT
@@ -579,7 +622,7 @@ export default function App() {
             </section>
           </div>
         ) : (
-          /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE (Harmonisée sur le style Post-Bac sans coefficients) */
+          /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <section className="lg:col-span-7 space-y-6">
               <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
@@ -677,15 +720,14 @@ export default function App() {
                         return (
                           <div
                             key={index}
-                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 hover:scale-[1.02] shadow-lg animate-bounce-short"
+                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 shadow-lg animate-top1"
                             style={{
                               backgroundColor: '#FDF8F6',
-                              borderColor: ACCENT,
-                              boxShadow: '0 10px 25px -5px rgba(156, 59, 46, 0.15)'
+                              borderColor: ACCENT
                             }}
                           >
                             <div 
-                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white"
+                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
                               style={{ borderColor: ACCENT, color: ACCENT }}
                             >
                               <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
@@ -709,9 +751,9 @@ export default function App() {
                               </span>
                             </div>
 
-                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden relative">
                               <div
-                                className="h-full rounded-full transition-all duration-1000 ease-out"
+                                className="h-full rounded-full transition-all duration-1000 ease-out shine-effect"
                                 style={{
                                   width: `${prob}%`,
                                   backgroundColor: ACCENT
