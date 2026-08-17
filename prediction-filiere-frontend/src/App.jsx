@@ -187,6 +187,17 @@ const ACCENT_SOFT = '#F3E5E1';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('bac');
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  // Gestion douce du changement d'onglet
+  const handleTabSwitch = (tab) => {
+    if (activeTab === tab) return;
+    setIsTranslating(true);
+    setTimeout(() => {
+      setActiveTab(tab);
+      setIsTranslating(false);
+    }, 150); // Pause imperceptible pour garantir le re-trigger de l'animation CSS
+  };
 
   // États Post-Bac
   const [notes, setNotes] = useState(DEFAULT_NOTES);
@@ -314,8 +325,24 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen font-sans pb-16 animate-fadeIn" style={{ backgroundColor: PAPER, color: INK }}>
+    <div className="min-h-screen font-sans pb-16" style={{ backgroundColor: PAPER, color: INK }}>
       <style>{`
+        /* Animation très lente (1.8s) et très fluide */
+        @keyframes ultraSlowFadeIn {
+          0% { 
+            opacity: 0; 
+            transform: translateY(24px); 
+          }
+          100% { 
+            opacity: 1; 
+            transform: translateY(0); 
+          }
+        }
+
+        .animate-tab-slow {
+          animation: ultraSlowFadeIn 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
         @keyframes popIn {
           0% { transform: scale(0.96); opacity: 0; }
           60% { transform: scale(1.02); opacity: 1; }
@@ -371,16 +398,16 @@ export default function App() {
           
           <div className="flex gap-2 bg-slate-100 p-1 rounded-lg border shadow-inner" style={{ borderColor: LINE }}>
             <button
-              onClick={() => setActiveTab('bac')}
-              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-200 ${
+              onClick={() => handleTabSwitch('bac')}
+              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-300 ${
                 activeTab === 'bac' ? 'bg-slate-800 text-white shadow-md scale-[1.02]' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Orientation Post-Bac
             </button>
             <button
-              onClick={() => setActiveTab('branche')}
-              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-200 ${
+              onClick={() => handleTabSwitch('branche')}
+              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-300 ${
                 activeTab === 'branche' ? 'bg-slate-800 text-white shadow-md scale-[1.02]' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -391,414 +418,416 @@ export default function App() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 pt-10">
-        {activeTab === 'bac' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <section className="lg:col-span-7 space-y-6">
-              <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
-                <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
-                  <div>
-                    <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de notes</h2>
-                    <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez chaque note sur 20 points.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleResetBac}
-                    className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
-                    style={{ borderColor: LINE, color: INK_SOFT }}
-                  >
-                    Réinitialiser
-                  </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
-                        Série du bac (Madagascar)
-                      </span>
+        {!isTranslating && (
+          activeTab === 'bac' ? (
+            <div key="bac-tab" className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-tab-slow">
+              <section className="lg:col-span-7 space-y-6">
+                <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
+                  <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
+                    <div>
+                      <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de notes</h2>
+                      <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez chaque note sur 20 points.</p>
                     </div>
-                    <div className="flex gap-2">
-                      {Object.entries(SERIES).map(([key, s]) => (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() => setSerie(key)}
-                          className="flex-1 py-2 px-3 rounded font-mono text-[10px] uppercase tracking-[0.1em] font-medium border transition-all duration-150"
-                          style={
-                            serie === key
-                              ? { backgroundColor: INK, color: PAPER, borderColor: INK, transform: 'scale(1.02)' }
-                              : { backgroundColor: 'transparent', color: INK_SOFT, borderColor: LINE }
-                          }
-                        >
-                          {s.label}
-                        </button>
+                    <button
+                      type="button"
+                      onClick={handleResetBac}
+                      className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
+                      style={{ borderColor: LINE, color: INK_SOFT }}
+                    >
+                      Réinitialiser
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
+                          Série du bac (Madagascar)
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        {Object.entries(SERIES).map(([key, s]) => (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => setSerie(key)}
+                            className="flex-1 py-2 px-3 rounded font-mono text-[10px] uppercase tracking-[0.1em] font-medium border transition-all duration-150"
+                            style={
+                              serie === key
+                                ? { backgroundColor: INK, color: PAPER, borderColor: INK, transform: 'scale(1.02)' }
+                                : { backgroundColor: 'transparent', color: INK_SOFT, borderColor: LINE }
+                            }
+                          >
+                            {s.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
+                      {MATIERES.map(m => (
+                        <div key={m.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
+                          <label htmlFor={m.id} className="font-sans text-sm">{m.label}</label>
+                          <input
+                            id={m.id}
+                            type="number"
+                            min="0"
+                            max="20"
+                            step="0.25"
+                            value={notes[m.id]}
+                            onChange={e => handleInputChange(m.id, e.target.value)}
+                            className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
+                            required
+                          />
+                        </div>
                       ))}
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
-                    {MATIERES.map(m => (
-                      <div key={m.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
-                        <label htmlFor={m.id} className="font-sans text-sm">{m.label}</label>
-                        <input
-                          id={m.id}
-                          type="number"
-                          min="0"
-                          max="20"
-                          step="0.25"
-                          value={notes[m.id]}
-                          onChange={e => handleInputChange(m.id, e.target.value)}
-                          className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
-                          required
-                        />
+                    <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
+                      <div>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale</span>
+                        <div className="font-mono text-xl font-bold mt-0.5">{moyenneBac} <span className="text-xs font-normal text-slate-400">/20</span></div>
                       </div>
-                    ))}
-                  </div>
-
-                  <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
-                    <div>
-                      <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale</span>
-                      <div className="font-mono text-xl font-bold mt-0.5">{moyenneBac} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                      {serie !== 'aucune' && (
+                        <div className="text-right">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Pondérée</span>
+                          <div className="font-mono text-xl font-bold mt-0.5" style={{ color: ACCENT }}>{moyennePonderee} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                        </div>
+                      )}
                     </div>
-                    {serie !== 'aucune' && (
-                      <div className="text-right">
-                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Pondérée</span>
-                        <div className="font-mono text-xl font-bold mt-0.5" style={{ color: ACCENT }}>{moyennePonderee} <span className="text-xs font-normal text-slate-400">/20</span></div>
+
+                    {showBacQuestion && !rejected && (
+                      <div className="p-4 rounded border-l-4 animate-slideDown" style={{ backgroundColor: ACCENT_SOFT, borderColor: ACCENT }}>
+                        <p className="text-sm font-medium mb-3" style={{ color: INK }}>
+                          Votre moyenne générale est inférieure à 10 ({moyenneBac}/20). Avez-vous quand même réussi votre examen du Bac ?
+                        </p>
+                        <div className="flex gap-3">
+                          <button
+                            type="button"
+                            onClick={() => { setShowBacQuestion(false); fetchRecommendations(); }}
+                            className="px-4 py-2 rounded font-mono text-xs uppercase tracking-wider font-semibold text-white shadow-sm"
+                            style={{ backgroundColor: ACCENT }}
+                          >
+                            Oui, j'ai mon Bac
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setRejected(true)}
+                            className="px-4 py-2 rounded font-mono text-xs uppercase tracking-wider font-semibold border bg-white"
+                            style={{ borderColor: LINE, color: INK_SOFT }}
+                          >
+                            Non
+                          </button>
+                        </div>
                       </div>
                     )}
-                  </div>
 
-                  {showBacQuestion && !rejected && (
-                    <div className="p-4 rounded border-l-4 animate-slideDown" style={{ backgroundColor: ACCENT_SOFT, borderColor: ACCENT }}>
-                      <p className="text-sm font-medium mb-3" style={{ color: INK }}>
-                        Votre moyenne générale est inférieure à 10 ({moyenneBac}/20). Avez-vous quand même réussi votre examen du Bac ?
-                      </p>
-                      <div className="flex gap-3">
-                        <button
-                          type="button"
-                          onClick={() => { setShowBacQuestion(false); fetchRecommendations(); }}
-                          className="px-4 py-2 rounded font-mono text-xs uppercase tracking-wider font-semibold text-white shadow-sm"
-                          style={{ backgroundColor: ACCENT }}
-                        >
-                          Oui, j'ai mon Bac
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setRejected(true)}
-                          className="px-4 py-2 rounded font-mono text-xs uppercase tracking-wider font-semibold border bg-white"
-                          style={{ borderColor: LINE, color: INK_SOFT }}
-                        >
-                          Non
-                        </button>
+                    {rejected && (
+                      <div className="p-4 rounded border bg-slate-50 text-center text-sm font-medium text-slate-600 animate-fadeIn">
+                        Il est recommandé de redoubler d'efforts ou de se préparer pour une session de rattrapage avant d'envisager une orientation supérieure.
                       </div>
+                    )}
+
+                    {error && <p className="text-red-600 text-xs font-mono">{error}</p>}
+
+                    {!showBacQuestion && !rejected && (
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
+                        style={{ backgroundColor: INK, color: PAPER }}
+                      >
+                        {loading ? "Analyse en cours..." : "Découvrir mes filières"}
+                      </button>
+                    )}
+                  </form>
+                </div>
+              </section>
+
+              <section className="lg:col-span-5 space-y-6">
+                {results && (
+                  <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
+                        TOP 3 · RECOMMANDATIONS DE FILIÈRES
+                      </p>
+                      <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
+                        Recommandations
+                      </h2>
+                      <hr className="mt-4" style={{ borderColor: LINE }} />
                     </div>
-                  )}
 
-                  {rejected && (
-                    <div className="p-4 rounded border bg-slate-50 text-center text-sm font-medium text-slate-600 animate-fadeIn">
-                      Il est recommandé de redoubler d'efforts ou de se préparer pour une session de rattrapage avant d'envisager une orientation supérieure.
-                    </div>
-                  )}
+                    <div className="space-y-5">
+                      {results.map((rec, index) => {
+                        const isTop1 = index === 0;
+                        const prob = parseFloat(rec.probabilite);
 
-                  {error && <p className="text-red-600 text-xs font-mono">{error}</p>}
+                        if (isTop1) {
+                          return (
+                            <div
+                              key={index}
+                              className="relative rounded-2xl p-5 border-2 transition-all duration-300 shadow-lg animate-top1"
+                              style={{
+                                backgroundColor: '#FDF8F6',
+                                borderColor: ACCENT
+                              }}
+                            >
+                              <div 
+                                className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
+                                style={{ borderColor: ACCENT, color: ACCENT }}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full animate-ping shrink-0" style={{ backgroundColor: ACCENT }} />
+                                MEILLEUR CHOIX
+                              </div>
 
-                  {!showBacQuestion && !rejected && (
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
-                      style={{ backgroundColor: INK, color: PAPER }}
-                    >
-                      {loading ? "Analyse en cours..." : "Découvrir mes filières"}
-                    </button>
-                  )}
-                </form>
-              </div>
-            </section>
+                              <div className="flex items-center justify-between gap-3 mb-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <span 
+                                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm shrink-0"
+                                    style={{ backgroundColor: ACCENT }}
+                                  >
+                                    1
+                                  </span>
+                                  <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
+                                    {rec.filiere}
+                                  </h3>
+                                </div>
+                                <span className="font-mono text-2xl font-black tracking-tight shrink-0" style={{ color: ACCENT }}>
+                                  {rec.probabilite}%
+                                </span>
+                              </div>
 
-            <section className="lg:col-span-5 space-y-6">
-              {results && (
-                <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
-                      TOP 3 · RECOMMANDATIONS DE FILIÈRES
-                    </p>
-                    <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
-                      Recommandations
-                    </h2>
-                    <hr className="mt-4" style={{ borderColor: LINE }} />
-                  </div>
+                              <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden relative">
+                                <div
+                                  className="h-full rounded-full transition-all duration-1000 ease-out shine-effect"
+                                  style={{
+                                    width: `${prob}%`,
+                                    backgroundColor: ACCENT
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        }
 
-                  <div className="space-y-5">
-                    {results.map((rec, index) => {
-                      const isTop1 = index === 0;
-                      const prob = parseFloat(rec.probabilite);
-
-                      if (isTop1) {
                         return (
                           <div
                             key={index}
-                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 shadow-lg animate-top1"
-                            style={{
-                              backgroundColor: '#FDF8F6',
-                              borderColor: ACCENT
-                            }}
+                            className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
+                            style={{ borderColor: LINE }}
                           >
-                            <div 
-                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
-                              style={{ borderColor: ACCENT, color: ACCENT }}
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full animate-ping shrink-0" style={{ backgroundColor: ACCENT }} />
-                              MEILLEUR CHOIX
-                            </div>
-
                             <div className="flex items-center justify-between gap-3 mb-3">
                               <div className="flex items-center gap-3 min-w-0">
-                                <span 
-                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm shrink-0"
-                                  style={{ backgroundColor: ACCENT }}
-                                >
-                                  1
+                                <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50 shrink-0" style={{ borderColor: LINE }}>
+                                  {rec.rang}
                                 </span>
-                                <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
+                                <h3 className="font-semibold text-base" style={{ color: INK }}>
                                   {rec.filiere}
                                 </h3>
                               </div>
-                              <span className="font-mono text-2xl font-black tracking-tight shrink-0" style={{ color: ACCENT }}>
+                              <span className="font-mono text-xl font-bold shrink-0" style={{ color: INK }}>
                                 {rec.probabilite}%
                               </span>
                             </div>
 
-                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden relative">
+                            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                               <div
-                                className="h-full rounded-full transition-all duration-1000 ease-out shine-effect"
+                                className="h-full rounded-full transition-all duration-1000 ease-out"
                                 style={{
                                   width: `${prob}%`,
-                                  backgroundColor: ACCENT
+                                  backgroundColor: INK
                                 }}
                               />
                             </div>
                           </div>
                         );
-                      }
-
-                      return (
-                        <div
-                          key={index}
-                          className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
-                          style={{ borderColor: LINE }}
-                        >
-                          <div className="flex items-center justify-between gap-3 mb-3">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50 shrink-0" style={{ borderColor: LINE }}>
-                                {rec.rang}
-                              </span>
-                              <h3 className="font-semibold text-base" style={{ color: INK }}>
-                                {rec.filiere}
-                              </h3>
-                            </div>
-                            <span className="font-mono text-xl font-bold shrink-0" style={{ color: INK }}>
-                              {rec.probabilite}%
-                            </span>
-                          </div>
-
-                          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-1000 ease-out"
-                              style={{
-                                width: `${prob}%`,
-                                backgroundColor: INK
-                              }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </section>
-          </div>
-        ) : (
-          /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <section className="lg:col-span-7 space-y-6">
-              <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
-                <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
-                  <div>
-                    <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de modules universitaires</h2>
-                    <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Sélectionnez votre filière et renseignez vos notes sur 20 points.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleResetBranch}
-                    className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
-                    style={{ borderColor: LINE, color: INK_SOFT }}
-                  >
-                    Réinitialiser
-                  </button>
-                </div>
-
-                <form onSubmit={fetchBranchRecommendations} className="space-y-8">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] block mb-2" style={{ color: INK_SOFT }}>
-                      Filière universitaire
-                    </span>
-                    <select
-                      value={selectedFiliereKey}
-                      onChange={e => handleFiliereChange(e.target.value)}
-                      className="w-full p-3 border rounded font-sans text-sm bg-white focus:outline-none focus:border-slate-800 transition-colors"
-                      style={{ borderColor: LINE, color: INK }}
-                    >
-                      {Object.entries(FILIERES_CONFIG).map(([key, config]) => (
-                        <option key={key} value={key}>{config.label}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
-                    {currentModules.map(mod => (
-                      <div key={mod.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
-                        <label htmlFor={mod.id} className="font-sans text-sm">{mod.label}</label>
-                        <input
-                          id={mod.id}
-                          type="number"
-                          min="0"
-                          max="20"
-                          step="0.25"
-                          value={moduleNotes[mod.id] ?? ''}
-                          onChange={e => handleModuleNoteChange(mod.id, e.target.value)}
-                          className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
-                          required
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
-                    <div>
-                      <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale des Modules</span>
-                      <div className="font-mono text-xl font-bold mt-0.5">{moyenneModules} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                      })}
                     </div>
                   </div>
-
-                  {branchError && <p className="text-red-600 text-xs font-mono">{branchError}</p>}
-
-                  <button
-                    type="submit"
-                    disabled={branchLoading}
-                    className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
-                    style={{ backgroundColor: INK, color: PAPER }}
-                  >
-                    {branchLoading ? "Analyse en cours..." : "Découvrir ma branche idéale"}
-                  </button>
-                </form>
-              </div>
-            </section>
-
-            <section className="lg:col-span-5 space-y-6">
-              {branchResults && (
-                <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
-                      TOP 3 · RECOMMANDATIONS DE BRANCHES
-                    </p>
-                    <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
-                      Recommandations
-                    </h2>
-                    <hr className="mt-4" style={{ borderColor: LINE }} />
+                )}
+              </section>
+            </div>
+          ) : (
+            /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE */
+            <div key="branche-tab" className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-tab-slow">
+              <section className="lg:col-span-7 space-y-6">
+                <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
+                  <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
+                    <div>
+                      <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de modules universitaires</h2>
+                      <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Sélectionnez votre filière et renseignez vos notes sur 20 points.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleResetBranch}
+                      className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
+                      style={{ borderColor: LINE, color: INK_SOFT }}
+                    >
+                      Réinitialiser
+                    </button>
                   </div>
 
-                  <div className="space-y-5">
-                    {branchResults.map((rec, index) => {
-                      const isTop1 = index === 0;
-                      const prob = parseFloat(rec.probabilite);
+                  <form onSubmit={fetchBranchRecommendations} className="space-y-8">
+                    <div>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em] block mb-2" style={{ color: INK_SOFT }}>
+                        Filière universitaire
+                      </span>
+                      <select
+                        value={selectedFiliereKey}
+                        onChange={e => handleFiliereChange(e.target.value)}
+                        className="w-full p-3 border rounded font-sans text-sm bg-white focus:outline-none focus:border-slate-800 transition-colors"
+                        style={{ borderColor: LINE, color: INK }}
+                      >
+                        {Object.entries(FILIERES_CONFIG).map(([key, config]) => (
+                          <option key={key} value={key}>{config.label}</option>
+                        ))}
+                      </select>
+                    </div>
 
-                      if (isTop1) {
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
+                      {currentModules.map(mod => (
+                        <div key={mod.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
+                          <label htmlFor={mod.id} className="font-sans text-sm">{mod.label}</label>
+                          <input
+                            id={mod.id}
+                            type="number"
+                            min="0"
+                            max="20"
+                            step="0.25"
+                            value={moduleNotes[mod.id] ?? ''}
+                            onChange={e => handleModuleNoteChange(mod.id, e.target.value)}
+                            className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
+                            required
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
+                      <div>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale des Modules</span>
+                        <div className="font-mono text-xl font-bold mt-0.5">{moyenneModules} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                      </div>
+                    </div>
+
+                    {branchError && <p className="text-red-600 text-xs font-mono">{branchError}</p>}
+
+                    <button
+                      type="submit"
+                      disabled={branchLoading}
+                      className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
+                      style={{ backgroundColor: INK, color: PAPER }}
+                    >
+                      {branchLoading ? "Analyse en cours..." : "Découvrir ma branche idéale"}
+                    </button>
+                  </form>
+                </div>
+              </section>
+
+              <section className="lg:col-span-5 space-y-6">
+                {branchResults && (
+                  <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
+                        TOP 3 · RECOMMANDATIONS DE BRANCHES
+                      </p>
+                      <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
+                        Recommandations
+                      </h2>
+                      <hr className="mt-4" style={{ borderColor: LINE }} />
+                    </div>
+
+                    <div className="space-y-5">
+                      {branchResults.map((rec, index) => {
+                        const isTop1 = index === 0;
+                        const prob = parseFloat(rec.probabilite);
+
+                        if (isTop1) {
+                          return (
+                            <div
+                              key={index}
+                              className="relative rounded-2xl p-5 border-2 transition-all duration-300 shadow-lg animate-top1"
+                              style={{
+                                backgroundColor: '#FDF8F6',
+                                borderColor: ACCENT
+                              }}
+                            >
+                              <div 
+                                className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
+                                style={{ borderColor: ACCENT, color: ACCENT }}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full animate-ping shrink-0" style={{ backgroundColor: ACCENT }} />
+                                MEILLEUR CHOIX
+                              </div>
+
+                              <div className="flex items-center justify-between gap-3 mb-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <span 
+                                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm shrink-0"
+                                    style={{ backgroundColor: ACCENT }}
+                                  >
+                                    1
+                                  </span>
+                                  <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
+                                    {rec.branche}
+                                  </h3>
+                                </div>
+                                <span className="font-mono text-2xl font-black tracking-tight shrink-0" style={{ color: ACCENT }}>
+                                  {rec.probabilite}%
+                                </span>
+                              </div>
+
+                              <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden relative">
+                                <div
+                                  className="h-full rounded-full transition-all duration-1000 ease-out shine-effect"
+                                  style={{
+                                    width: `${prob}%`,
+                                    backgroundColor: ACCENT
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        }
+
                         return (
                           <div
                             key={index}
-                            className="relative rounded-2xl p-5 border-2 transition-all duration-300 shadow-lg animate-top1"
-                            style={{
-                              backgroundColor: '#FDF8F6',
-                              borderColor: ACCENT
-                            }}
+                            className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
+                            style={{ borderColor: LINE }}
                           >
-                            <div 
-                              className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white z-10"
-                              style={{ borderColor: ACCENT, color: ACCENT }}
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full animate-ping shrink-0" style={{ backgroundColor: ACCENT }} />
-                              MEILLEUR CHOIX
-                            </div>
-
                             <div className="flex items-center justify-between gap-3 mb-3">
                               <div className="flex items-center gap-3 min-w-0">
-                                <span 
-                                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm shrink-0"
-                                  style={{ backgroundColor: ACCENT }}
-                                >
-                                  1
+                                <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50 shrink-0" style={{ borderColor: LINE }}>
+                                  {rec.rang}
                                 </span>
-                                <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
+                                <h3 className="font-semibold text-base" style={{ color: INK }}>
                                   {rec.branche}
                                 </h3>
                               </div>
-                              <span className="font-mono text-2xl font-black tracking-tight shrink-0" style={{ color: ACCENT }}>
+                              <span className="font-mono text-xl font-bold shrink-0" style={{ color: INK }}>
                                 {rec.probabilite}%
                               </span>
                             </div>
 
-                            <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden relative">
+                            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                               <div
-                                className="h-full rounded-full transition-all duration-1000 ease-out shine-effect"
+                                className="h-full rounded-full transition-all duration-1000 ease-out"
                                 style={{
                                   width: `${prob}%`,
-                                  backgroundColor: ACCENT
+                                  backgroundColor: INK
                                 }}
                               />
                             </div>
                           </div>
                         );
-                      }
-
-                      return (
-                        <div
-                          key={index}
-                          className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
-                          style={{ borderColor: LINE }}
-                        >
-                          <div className="flex items-center justify-between gap-3 mb-3">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50 shrink-0" style={{ borderColor: LINE }}>
-                                {rec.rang}
-                              </span>
-                              <h3 className="font-semibold text-base" style={{ color: INK }}>
-                                {rec.branche}
-                              </h3>
-                            </div>
-                            <span className="font-mono text-xl font-bold shrink-0" style={{ color: INK }}>
-                              {rec.probabilite}%
-                            </span>
-                          </div>
-
-                          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-1000 ease-out"
-                              style={{
-                                width: `${prob}%`,
-                                backgroundColor: INK
-                              }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
-            </section>
-          </div>
+                )}
+              </section>
+            </div>
+          )
         )}
       </main>
     </div>
