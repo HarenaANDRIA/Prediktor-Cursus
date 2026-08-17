@@ -390,7 +390,7 @@ export default function App() {
               Prédiktor Cursus
             </h1>
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
-              Système d'orientation · Filières & Branches
+              Système d'orientation · Filières & Spécialisation
             </p>
           </div>
           
