@@ -7,7 +7,7 @@ const MATIERES = [
   { id: 'chimie', label: 'Chimie' },
   { id: 'science_de_la_vie_et_de_la_terre', label: 'SVT' },
   { id: 'statistiques_et_probabilites', label: 'Statistiques & Probabilités' },
-  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquee' },
+  { id: 'biologie_appliquee_et_biotechnologie', label: 'Biologie Appliquée' },
   { id: 'francais', label: 'Français' },
   { id: 'anglais', label: 'Anglais' },
   { id: 'philosophie', label: 'Philosophie' },
