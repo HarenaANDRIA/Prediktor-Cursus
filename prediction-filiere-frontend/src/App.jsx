@@ -14,14 +14,131 @@ const MATIERES = [
   { id: 'test_psychotechnique', label: 'Test Psychotechnique' }
 ];
 
+const FILIERES_CONFIG = {
+  'science_des_donnees_et_intelligence_artificielle': {
+    label: 'Science des Données & IA',
+    modules: [
+      { id: 'algorithmique_python', label: 'Algorithmique & Python' },
+      { id: 'sql_bases_de_donnees', label: 'SQL & Bases de Données' },
+      { id: 'algebre_et_analyse', label: 'Algèbre & Analyse' },
+      { id: 'langages_web', label: 'Langages Web' },
+      { id: 'linux', label: 'Systèmes Linux' },
+      { id: 'codage', label: 'Théorie du Codage' },
+      { id: 'cryptographie', label: 'Cryptographie' },
+      { id: 'reseaux informatiques', label: 'Réseaux Informatiques' }
+    ]
+  },
+  'medecine_et_pharmacie': {
+    label: 'Médecine & Pharmacie',
+    modules: [
+      { id: 'anatomie', label: 'Anatomie' },
+      { id: 'physiologie', label: 'Physiologie' },
+      { id: 'biochimie', label: 'Biochimie' },
+      { id: 'histologie', label: 'Histologie' },
+      { id: 'anatomie_pathologique', label: 'Anatomie Pathologique' }
+    ]
+  },
+  'agronomie_et_biotechnologie': {
+    label: 'Agronomie & Biotechnologie',
+    modules: [
+      { id: 'genetique_biologie_moleculaire', label: 'Génétique & Biologie Moléculaire' },
+      { id: 'physiologie_ecologie', label: 'Physiologie & Écologie' },
+      { id: 'biochimie', label: 'Biochimie' },
+      { id: 'statistiques_agricoles_et_modelisation', label: 'Statistiques Agricoles' }
+    ]
+  },
+  'sciences_environnementales_et_science_marine': {
+    label: 'Sciences Environnementales & Marine',
+    modules: [
+      { id: 'oceanographie_et_climatologie', label: 'Océanographie & Climatologie' },
+      { id: 'ecologie_marine', label: 'Écologie Marine' },
+      { id: 'geologie_sedimentaire_et_hydrologie', label: 'Géologie & Hydrologie' }
+    ]
+  },
+  'tourisme_et_hotellerie': {
+    label: 'Tourisme & Hôtellerie',
+    modules: [
+      { id: 'management_interculturel', label: 'Management Interculturel' },
+      { id: 'comptabilite', label: 'Comptabilité' },
+      { id: 'geographie', label: 'Géographie' },
+      { id: 'droit', label: 'Droit' },
+      { id: 'anglais', label: 'Anglais' },
+      { id: 'francais', label: 'Français' },
+      { id: 'allemand', label: 'Allemand' },
+      { id: 'espagnol', label: 'Espagnol' }
+    ]
+  },
+  'langues_et_communication': {
+    label: 'Langues & Communication',
+    modules: [
+      { id: 'langues_etrangeres', label: 'Langues Étrangères' },
+      { id: 'semiologie', label: 'Sémiologie' },
+      { id: 'journalisme_et_redaction_web', label: 'Journalisme & Rédaction Web' },
+      { id: 'audiovisuel_et_multimedia', label: 'Audiovisuel & Multimédia' }
+    ]
+  },
+  'sociologie': {
+    label: 'Sociologie',
+    modules: [
+      { id: 'theories_sociologiques_et_philosophie_sociale', label: 'Théories Sociologiques' },
+      { id: 'statistiques_methodologie_quantitative', label: 'Méthodologie Quantitative' },
+      { id: 'demographie_sociologie_famille', label: 'Démographie & Famille' }
+    ]
+  },
+  'droit_et_sciences_politiques': {
+    label: 'Droit & Sciences Politiques',
+    modules: [
+      { id: 'droit_civil_et_procedure_civile', label: 'Droit Civil & Procédure' },
+      { id: 'droit_penal_procedure_penale', label: 'Droit Pénal' },
+      { id: 'droit_administratif_constitutionnel', label: 'Droit Administratif & Const.' },
+      { id: 'droit_commercial', label: 'Droit Commercial' }
+    ]
+  },
+  'sciences_actuarielles': {
+    label: 'Sciences Actuarielles',
+    modules: [
+      { id: 'probabilites_statistiques_appliquees', label: 'Probabilités Appliquées' },
+      { id: 'mathematiques_financieres_finance_marche', label: 'Mathématiques Financières' },
+      { id: 'droit_assurances_reglementation', label: 'Droit des Assurances' }
+    ]
+  },
+  'ingenierie_et_science_generale': {
+    label: 'Ingénierie & Science Générale',
+    modules: [
+      { id: 'resistance_des_materiaux', label: 'Résistance des Matériaux (RDM)' },
+      { id: 'mecanique_des_fluides', label: 'Mécanique des Fluides' },
+      { id: 'thermodynamique_energetique', label: 'Thermodynamique' },
+      { id: 'electronique', label: 'Électronique' },
+      { id: 'automatique', label: 'Automatique' },
+      { id: 'electricite', label: 'Électricité' },
+      { id: 'mathematiques_discretes_et_algorithmique', label: 'Maths Discrètes & Algo' }
+    ]
+  },
+  'psychologie': {
+    label: 'Psychologie',
+    modules: [
+      { id: 'psychopathologie_clinique', label: 'Psychopathologie Clinique' },
+      { id: 'neurosciences_sociales', label: 'Neurosciences Sociales' }
+    ]
+  },
+  'anthropologie_ou_archeologie': {
+    label: 'Anthropologie ou Archéologie',
+    modules: [
+      { id: 'paleoanthropologie_et_osteologie', label: 'Paléoanthropologie & Ostéologie' },
+      { id: 'prehistoire_geoarcheologie', label: 'Préhistoire & Géoarchéologie' },
+      { id: 'ethnologie', label: 'Ethnologie' },
+      { id: 'anthropologie_culturelle', label: 'Anthropologie Culturelle' }
+    ]
+  }
+};
+
 const DEFAULT_NOTES = MATIERES.reduce((acc, m) => ({ ...acc, [m.id]: 10 }), {});
 
 const SERIES = {
   aucune: { label: 'Aucune', coef5: [], coef4: [], coef3: [] },
   scientifique: {
     label: 'Scientifique',
-    coef5: ['mathematiques', 'physique', 'chimie','statistiques_et_probabilites', 
-            'science_de_la_vie_et_de_la_terre'],
+    coef5: ['mathematiques', 'physique', 'chimie','statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre'],
     coef4: ['test_psychotechnique'],
     coef3: [],
   },
@@ -64,6 +181,9 @@ const ACCENT = '#9C3B2E';
 const ACCENT_SOFT = '#F3E5E1';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('bac');
+
+  // États Post-Bac
   const [notes, setNotes] = useState(DEFAULT_NOTES);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -71,13 +191,27 @@ export default function App() {
   const [showBacQuestion, setShowBacQuestion] = useState(false);
   const [rejected, setRejected] = useState(false);
   const [serie, setSerie] = useState('aucune');
-  const [isFlatProfile, setIsFlatProfile] = useState(false);
+
+  // États Branches Universitaires
+  const [selectedFiliereKey, setSelectedFiliereKey] = useState(Object.keys(FILIERES_CONFIG)[0]);
+  const [moduleNotes, setModuleNotes] = useState({});
+  const [branchResults, setBranchResults] = useState(null);
+  const [branchLoading, setBranchLoading] = useState(false);
+  const [branchError, setBranchError] = useState(null);
 
   const handleInputChange = (id, value) => {
     const val = parseFloat(value);
     setNotes(prev => ({
       ...prev,
       [id]: isNaN(val) ? '' : Math.min(20, Math.max(0, val))
+    }));
+  };
+
+  const handleModuleNoteChange = (modId, value) => {
+    const val = parseFloat(value);
+    setModuleNotes(prev => ({
+      ...prev,
+      [modId]: isNaN(val) ? '' : Math.min(20, Math.max(0, val))
     }));
   };
 
@@ -88,7 +222,6 @@ export default function App() {
     setShowBacQuestion(false);
     setRejected(false);
     setSerie('aucune');
-    setIsFlatProfile(false);
   };
 
   const values = Object.values(notes).filter(v => typeof v === 'number');
@@ -104,21 +237,11 @@ export default function App() {
   const moyennePondereeNum = weightedTotals.sumCoefs ? weightedTotals.sumNotes / weightedTotals.sumCoefs : 0;
   const moyennePonderee = weightedTotals.sumCoefs ? moyennePondereeNum.toFixed(2) : '0.00';
 
-  const checkIfFlatProfile = (currentNotes) => {
-    const vals = Object.values(currentNotes);
-    if (vals.length === 0) return false;
-    const firstVal = vals[0];
-    return vals.every(v => v === firstVal);
-  };
-
   const fetchRecommendations = async () => {
     setLoading(true);
     setError(null);
     setShowBacQuestion(false);
     setRejected(false);
-
-    const flat = checkIfFlatProfile(notes);
-    setIsFlatProfile(flat);
 
     try {
       const notesForModel = computeNotesForModel(notes, serie);
@@ -128,6 +251,24 @@ export default function App() {
       setError("Impossible de contacter le serveur d'IA (http://localhost:8000).");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBranchRecommendations = async (e) => {
+    e.preventDefault();
+    setBranchLoading(true);
+    setBranchError(null);
+
+    try {
+      const response = await axios.post('http://localhost:8000/predict-branch', {
+        filiere: selectedFiliereKey,
+        notes_modules: moduleNotes
+      });
+      setBranchResults(response.data.recommandations);
+    } catch (err) {
+      setBranchError("Impossible de contacter le serveur de recommandation de branche.");
+    } finally {
+      setBranchLoading(false);
     }
   };
 
@@ -144,162 +285,92 @@ export default function App() {
     }
   };
 
+  const currentModules = FILIERES_CONFIG[selectedFiliereKey]?.modules || [];
+
   return (
-    <div className="min-h-screen font-sans pb-16" style={{ backgroundColor: PAPER, color: INK }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-        .font-display { font-family: 'Fraunces', serif; font-feature-settings: 'ss01' 1; }
-        .font-mono { font-family: 'IBM Plex Mono', monospace; }
-        .font-sans { font-family: 'IBM Plex Sans', sans-serif; }
-
-        @keyframes popIn {
-          0% { transform: scale(0.96); opacity: 0; }
-          60% { transform: scale(1.02); opacity: 1; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 4px 20px -2px rgba(156, 59, 46, 0.25); }
-          50% { box-shadow: 0 6px 28px 4px rgba(156, 59, 46, 0.45); }
-        }
-
-        /* Continuous bounce animation for Top-1 */
-        @keyframes continuousBounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-6px);
-          }
-        }
-
-        @keyframes shine {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-
-        .animate-top1 {
-          animation: 
-            popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-            pulseGlow 3s infinite ease-in-out,
-            continuousBounce 2.5s infinite ease-in-out;
-        }
-
-        .shine-effect::after {
-          content: '';
-          position: absolute;
-          top: 0; right: 0; bottom: 0; left: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-          transform: translateX(-100%);
-          animation: shine 2s infinite 0.8s;
-        }
-      `}</style>
-
-      <header className="sticky top-0 z-50 border-b" style={{ backgroundColor: PAPER, borderColor: LINE }}>
+    <div className="min-h-screen font-sans pb-16 animate-fadeIn" style={{ backgroundColor: PAPER, color: INK }}>
+      <header className="sticky top-0 z-50 border-b backdrop-blur-md bg-white/80" style={{ borderColor: LINE }}>
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl font-medium tracking-tight" style={{ color: INK }}>
               Prédiktor Cursus
             </h1>
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
-              Système d'orientation · 12 matières · 10 filières
+              Système d'orientation · Filières & Branches
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-right leading-tight" style={{ color: INK_SOFT }}>
-              Moyenne<br />générale
-            </span>
-            <div
-              className="min-w-14 h-14 px-3 rounded-full flex items-center justify-center border-2 font-mono font-semibold text-sm whitespace-nowrap"
-              style={{ borderColor: INK, color: INK }}
+          
+          <div className="flex gap-2 bg-slate-100 p-1 rounded-lg border shadow-inner" style={{ borderColor: LINE }}>
+            <button
+              onClick={() => setActiveTab('bac')}
+              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-200 ${
+                activeTab === 'bac' ? 'bg-slate-800 text-white shadow-md scale-[1.02]' : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              {moyenne}
-            </div>
+              Orientation Post-Bac
+            </button>
+            <button
+              onClick={() => setActiveTab('branche')}
+              className={`px-4 py-2 rounded text-xs font-mono transition-all duration-200 ${
+                activeTab === 'branche' ? 'bg-slate-800 text-white shadow-md scale-[1.02]' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Spécialisation Branche
+            </button>
           </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 pt-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <section className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-lg p-6 border" style={{ borderColor: LINE }}>
-              <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
-                <div>
-                  <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de notes</h2>
-                  <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez chaque note sur 20 points.</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors"
-                  style={{ borderColor: LINE, color: INK_SOFT }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = LINE; e.currentTarget.style.color = INK_SOFT; }}
-                >
-                  Réinitialiser
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
-                      Série du bac (Madagascar)
-                    </span>
-                    {serie !== 'aucune' && (
-                      <span className="font-sans text-xs" style={{ color: INK_SOFT }}>
-                        Moyenne pondérée : <span className="font-mono font-semibold" style={{ color: ACCENT }}>{moyennePonderee}/20</span>
-                      </span>
-                    )}
+        {activeTab === 'bac' ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <section className="lg:col-span-7 space-y-6">
+              <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
+                <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
+                  <div>
+                    <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de notes</h2>
+                    <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez chaque note sur 20 points.</p>
                   </div>
-                  <div className="flex gap-2">
-                    {Object.entries(SERIES).map(([key, s]) => {
-                      const isActive = serie === key;
-                      return (
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 rounded border transition-colors hover:bg-slate-50"
+                    style={{ borderColor: LINE, color: INK_SOFT }}
+                  >
+                    Réinitialiser
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
+                        Série du bac (Madagascar)
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      {Object.entries(SERIES).map(([key, s]) => (
                         <button
                           key={key}
                           type="button"
                           onClick={() => setSerie(key)}
-                          className="flex-1 py-2 px-3 rounded font-mono text-[10px] uppercase tracking-[0.1em] font-medium border transition-colors"
+                          className="flex-1 py-2 px-3 rounded font-mono text-[10px] uppercase tracking-[0.1em] font-medium border transition-all duration-150"
                           style={
-                            isActive
-                              ? { backgroundColor: INK, color: PAPER, borderColor: INK }
+                            serie === key
+                              ? { backgroundColor: INK, color: PAPER, borderColor: INK, transform: 'scale(1.02)' }
                               : { backgroundColor: 'transparent', color: INK_SOFT, borderColor: LINE }
                           }
                         >
                           {s.label}
                         </button>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
-                  {MATIERES.map(m => {
-                    const coef = getCoefficient(m.id, serie);
-                    return (
-                      <div
-                        key={m.id}
-                        className="flex items-baseline justify-between py-2.5 border-b"
-                        style={{ borderColor: LINE, borderBottomStyle: 'dotted' }}
-                      >
-                        <div className="flex items-center gap-2 pr-2 min-w-0">
-                          <label htmlFor={m.id} className="font-sans text-sm truncate" style={{ color: INK }}>
-                            {m.label}
-                          </label>
-                          {serie !== 'aucune' && (
-                            <span
-                              className="font-mono text-[9px] px-1.5 py-0.5 rounded-full border shrink-0 inline-flex items-center justify-center min-w-[24px] h-[18px]"
-                              style={
-                                coef >= 4
-                                  ? { color: ACCENT, borderColor: ACCENT, backgroundColor: ACCENT_SOFT }
-                                  : { color: INK_SOFT, borderColor: LINE }
-                              }
-                            >
-                              ×{coef}
-                            </span>
-                          )}
-                        </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
+                    {MATIERES.map(m => (
+                      <div key={m.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
+                        <label htmlFor={m.id} className="font-sans text-sm">{m.label}</label>
                         <input
                           id={m.id}
                           type="number"
@@ -308,181 +379,296 @@ export default function App() {
                           step="0.25"
                           value={notes[m.id]}
                           onChange={e => handleInputChange(m.id, e.target.value)}
-                          className="font-mono text-base font-semibold text-right min-w-[4.5rem] w-auto bg-transparent border-0 border-b-2 focus:outline-none px-1"
-                          style={{ color: INK, borderColor: 'transparent' }}
-                          onFocus={e => { e.currentTarget.style.borderColor = ACCENT; }}
-                          onBlur={e => { e.currentTarget.style.borderColor = 'transparent'; }}
+                          className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
                           required
                         />
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
+
+                  <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
+                    <div>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale</span>
+                      <div className="font-mono text-xl font-bold mt-0.5">{moyenne} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                    </div>
+                    {serie !== 'aucune' && (
+                      <div className="text-right">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Pondérée</span>
+                        <div className="font-mono text-xl font-bold mt-0.5" style={{ color: ACCENT }}>{moyennePonderee} <span className="text-xs font-normal text-slate-400">/20</span></div>
+                      </div>
+                    )}
+                  </div>
+
+                  {showBacQuestion && !rejected && (
+                    <div className="p-4 rounded border-l-4 animate-slideDown" style={{ backgroundColor: ACCENT_SOFT, borderColor: ACCENT }}>
+                      <p className="text-sm font-medium mb-3" style={{ color: INK }}>
+                        Votre moyenne générale est inférieure à 10 ({moyenne}/20). Avez-vous quand même réussi votre examen du Bac ?
+                      </p>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => { setShowBacQuestion(false); fetchRecommendations(); }}
+                          className="px-4 py-2 rounded font-mono text-xs uppercase tracking-wider font-semibold text-white shadow-sm"
+                          style={{ backgroundColor: ACCENT }}
+                        >
+                          Oui, j'ai mon Bac
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setRejected(true)}
+                          className="px-4 py-2 rounded font-mono text-xs uppercase tracking-wider font-semibold border bg-white"
+                          style={{ borderColor: LINE, color: INK_SOFT }}
+                        >
+                          Non
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {rejected && (
+                    <div className="p-4 rounded border bg-slate-50 text-center text-sm font-medium text-slate-600 animate-fadeIn">
+                      Il est recommandé de redoubler d'efforts ou de se préparer pour une session de rattrapage avant d'envisager une orientation supérieure.
+                    </div>
+                  )}
+
+                  {error && <p className="text-red-600 text-xs font-mono">{error}</p>}
+
+                  {!showBacQuestion && !rejected && (
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
+                      style={{ backgroundColor: INK, color: PAPER }}
+                    >
+                      {loading ? "Analyse en cours..." : "Découvrir mes filières"}
+                    </button>
+                  )}
+                </form>
+              </div>
+            </section>
+
+            <section className="lg:col-span-5 space-y-6">
+  {results && (
+    <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+      {/* En-tête du bloc Recommandations */}
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
+          TOP 3 · RECOMMANDATIONS DE FILIÈRES
+        </p>
+        <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
+          Recommandations
+        </h2>
+        <hr className="mt-4" style={{ borderColor: LINE }} />
+      </div>
+
+      <div className="space-y-5">
+        {results.map((rec, index) => {
+          const isTop1 = index === 0;
+          const prob = parseFloat(rec.probabilite);
+
+          if (isTop1) {
+            return (
+              /* CARD TOP 1 - Style bordeaux avec badge chevauchant et barre de progression rouge */
+              <div
+                key={index}
+                className="relative rounded-2xl p-5 border-2 transition-all duration-300 hover:scale-[1.02] shadow-lg animate-bounce-short"
+                style={{
+                  backgroundColor: '#FDF8F6',
+                  borderColor: ACCENT,
+                  boxShadow: '0 10px 25px -5px rgba(156, 59, 46, 0.15)'
+                }}
+              >
+                {/* Badge MEILLEUR CHOIX chevauchant la bordure supérieure */}
+                <div 
+                  className="absolute -top-3.5 right-6 px-3 py-0.5 rounded-full border text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 shadow-sm bg-white"
+                  style={{ borderColor: ACCENT, color: ACCENT }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
+                  MEILLEUR CHOIX
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium transition-colors disabled:opacity-50 text-center"
-                  style={{ backgroundColor: loading ? INK_SOFT : INK, color: PAPER }}
-                  onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = ACCENT; }}
-                  onMouseLeave={e => { if (!loading) e.currentTarget.style.backgroundColor = INK; }}
-                >
-                  {loading ? "Analyse en cours..." : "Découvrir mes filières"}
-                </button>
-              </form>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <span 
+                      className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm"
+                      style={{ backgroundColor: ACCENT }}
+                    >
+                      1
+                    </span>
+                    <h3 className="font-bold text-lg leading-snug" style={{ color: INK }}>
+                      {rec.filiere}
+                    </h3>
+                  </div>
+                  <span className="font-mono text-2xl font-black tracking-tight" style={{ color: ACCENT }}>
+                    {rec.probabilite}%
+                  </span>
+                </div>
+
+                {/* Barre de progression Top 1 */}
+                <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000 ease-out"
+                    style={{
+                      width: `${prob}%`,
+                      backgroundColor: ACCENT
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            /* CARDS 2 ET 3 - Cartes avec contour neutre et barres grises/sombre */
+            <div
+              key={index}
+              className="rounded-2xl p-5 border bg-white transition-all duration-200 hover:border-slate-400 shadow-sm"
+              style={{ borderColor: LINE }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full border flex items-center justify-center font-semibold text-sm text-slate-600 bg-slate-50" style={{ borderColor: LINE }}>
+                    {rec.rang}
+                  </span>
+                  <h3 className="font-semibold text-base" style={{ color: INK }}>
+                    {rec.filiere}
+                  </h3>
+                </div>
+                <span className="font-mono text-xl font-bold" style={{ color: INK }}>
+                  {rec.probabilite}%
+                </span>
+              </div>
+
+              {/* Barre de progression neutre */}
+              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-1000 ease-out"
+                  style={{
+                    width: `${prob}%`,
+                    backgroundColor: INK
+                  }}
+                />
+              </div>
             </div>
-          </section>
+          );
+        })}
+      </div>
+    </div>
+  )}
+</section>
+          </div>
+        ) : (
+          /* SECTION SPÉCIALISATION BRANCHE UNIVERSITAIRE */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <section className="lg:col-span-7 space-y-6">
+              <div className="bg-white rounded-lg p-6 border shadow-sm" style={{ borderColor: LINE }}>
+                <h2 className="font-display text-lg font-medium mb-1">Parcours Universitaire & Modules</h2>
+                <p className="font-sans text-sm mb-6 text-slate-500">Sélectionnez votre filière et renseignez vos notes de modules.</p>
+                
+                <form onSubmit={fetchBranchRecommendations} className="space-y-6">
+                  <div>
+                    <label className="font-mono text-xs uppercase text-slate-500 block mb-2">Votre Filière d'études</label>
+                    <select
+                      value={selectedFiliereKey}
+                      onChange={e => {
+                        setSelectedFiliereKey(e.target.value);
+                        setModuleNotes({});
+                      }}
+                      className="w-full p-3 border rounded font-sans text-sm focus:outline-none focus:border-slate-800 transition-colors"
+                      style={{ borderColor: LINE }}
+                    >
+                      {Object.entries(FILIERES_CONFIG).map(([key, config]) => (
+                        <option key={key} value={key}>{config.label}</option>
+                      ))}
+                    </select>
+                  </div>
 
-          <section className="lg:col-span-5 space-y-6">
-            {error && (
-              <div className="rounded-lg p-4 text-sm font-sans" style={{ backgroundColor: ACCENT_SOFT, color: ACCENT, border: `1px solid ${ACCENT}` }}>
-                {error}
-              </div>
-            )}
+                  <div className="space-y-4">
+                    <h3 className="font-mono text-xs uppercase text-slate-500 tracking-wider">Notes par module universitaire (/20)</h3>
+                    {currentModules.map(mod => (
+                      <div key={mod.id} className="flex justify-between items-center py-2.5 border-b" style={{ borderColor: LINE }}>
+                        <span className="text-sm font-sans">{mod.label}</span>
+                        <input
+                          type="number"
+                          min="0"
+                          max="20"
+                          step="0.25"
+                          value={moduleNotes[mod.id] ?? ''}
+                          onChange={e => handleModuleNoteChange(mod.id, e.target.value)}
+                          placeholder="10"
+                          className="font-mono text-right w-16 p-1 border-b-2 focus:outline-none focus:border-slate-800"
+                          required
+                        />
+                      </div>
+                    ))}
+                  </div>
 
-            {!results && !loading && !error && !showBacQuestion && !rejected && (
-              <div
-                className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border border-dashed"
-                style={{ borderColor: LINE }}
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Analyse</span>
-                <h3 className="font-display text-lg font-medium mt-2" style={{ color: INK }}>En attente de saisie</h3>
-                <p className="font-sans text-sm mt-2 max-w-xs" style={{ color: INK_SOFT }}>
-                  Complétez le bulletin pour calculer vos affinités parmi les 10 filières recommandées.
-                </p>
-              </div>
-            )}
+                  {branchError && <p className="text-red-600 text-xs font-mono">{branchError}</p>}
 
-            {showBacQuestion && (
-              <div
-                className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border space-y-6"
-                style={{ borderColor: ACCENT }}
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: ACCENT }}>Vérification</span>
-                <h3 className="font-display text-lg font-medium" style={{ color: INK }}>
-                  Êtes-vous sûr que vous avez été admis(es) au bac ?
-                </h3>
-                <p className="font-sans text-sm max-w-xs" style={{ color: INK_SOFT }}>
-                  Votre moyenne actuelle est de <span className="font-semibold" style={{ color: ACCENT }}>{moyenne}/20</span>.
-                </p>
-                <div className="flex gap-4 w-full max-w-xs pt-2">
                   <button
-                    type="button"
-                    onClick={() => fetchRecommendations()}
-                    className="flex-1 py-3 px-4 rounded font-mono text-xs uppercase tracking-[0.1em] font-medium transition-colors"
+                    type="submit"
+                    disabled={branchLoading}
+                    className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
                     style={{ backgroundColor: INK, color: PAPER }}
                   >
-                    OUI
+                    {branchLoading ? "Recherche de la branche..." : "Découvrir ma branche idéale"}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => { setShowBacQuestion(false); setRejected(true); }}
-                    className="flex-1 py-3 px-4 rounded font-mono text-xs uppercase tracking-[0.1em] font-medium border transition-colors"
-                    style={{ borderColor: LINE, color: INK }}
-                  >
-                    NON
-                  </button>
-                </div>
+                </form>
               </div>
-            )}
+            </section>
 
-            {rejected && (
-              <div className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border" style={{ borderColor: LINE }}>
-                <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Résultat</span>
-                <h3 className="font-display text-xl font-medium mt-3" style={{ color: ACCENT }}>
-                  Réessayez l'année prochaine, bon courage !
-                </h3>
-              </div>
-            )}
-
-            {loading && !results && (
-              <div className="bg-white rounded-lg p-8 text-center flex flex-col items-center justify-center min-h-[420px] border" style={{ borderColor: LINE }}>
-                <div className="w-10 h-10 rounded-full border-2 animate-spin" style={{ borderColor: LINE, borderTopColor: ACCENT }} />
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-4" style={{ color: INK_SOFT }}>
-                  Calcul des affinités selon les conditions...
-                </p>
-              </div>
-            )}
-
-            {results && (
-              <div className="bg-white rounded-lg p-6 border space-y-6" style={{ borderColor: LINE }}>
-                <div className="pb-4 border-b" style={{ borderColor: LINE }}>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
-                    Top 3 · Recommandations de filières
-                  </span>
-                  <h2 className="font-display text-lg font-medium mt-1" style={{ color: INK }}>Recommandations</h2>
-                </div>
-
-                {isFlatProfile && (
-                  <div className="p-3 rounded text-xs border" style={{ backgroundColor: '#FFFBEB', borderColor: '#F59E0B', color: '#B45309' }}>
-                    <strong>Note :</strong> Profil uniforme (notes identiques sur toutes les matières). La prédiction du modèle est indicative, car aucun domaine de force spécifique n'émerge.
+            <section className="lg:col-span-5 space-y-6">
+              {branchResults && (
+                <div className="bg-white rounded-lg p-6 border shadow-sm space-y-4 animate-fadeIn" style={{ borderColor: LINE }}>
+                  <div className="border-b pb-3" style={{ borderColor: LINE }}>
+                    <h2 className="font-display text-lg font-medium">Branches Spécialisées Recommandées</h2>
+                    <p className="text-xs text-slate-500 font-mono mt-0.5">Basé sur vos notes de modules</p>
                   </div>
-                )}
 
-                <div className="space-y-4">
-                  {results.map((rec, index) => {
-                    const isTop1 = index === 0;
-                    return (
-                      <div
-                        key={rec.rang || index}
-                        className={`p-4 rounded-lg border relative transition-all duration-300 ${
-                          isTop1 ? 'animate-top1' : 'hover:translate-x-1'
-                        }`}
-                        style={{
-                          backgroundColor: isTop1 ? ACCENT_SOFT : '#FFFFFF',
-                          borderColor: isTop1 ? ACCENT : LINE,
-                          borderWidth: isTop1 ? '2px' : '1px'
-                        }}
-                      >
-                        {isTop1 && (
-                          <div className="absolute -top-3 right-4 bg-white border border-red-800 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-sm z-10">
-                            <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: ACCENT }} />
-                            <span className="font-mono text-[9px] uppercase tracking-[0.12em] font-semibold" style={{ color: ACCENT }}>
-                              Meilleur Choix
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className="w-7 h-7 rounded-full flex items-center justify-center font-mono text-[11px] font-semibold shrink-0 transition-transform hover:scale-110"
-                              style={
-                                isTop1
-                                  ? { backgroundColor: ACCENT, color: PAPER }
-                                  : { border: `1px solid ${LINE}`, color: INK_SOFT }
-                              }
-                            >
-                              {rec.rang || index + 1}
+                  <div className="space-y-3">
+                    {branchResults.map((rec, index) => {
+                      const isTop1 = index === 0;
+                      return (
+                        <div
+                          key={index}
+                          className={`p-4 rounded-lg border transition-all duration-300 ${
+                            isTop1 
+                              ? 'shadow-md border-slate-900 bg-slate-900 text-white transform scale-[1.02]' 
+                              : 'hover:border-slate-400 bg-white'
+                          }`}
+                          style={!isTop1 ? { borderColor: LINE } : {}}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <span className={`font-mono text-xs font-bold px-2 py-1 rounded ${isTop1 ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'}`}>
+                                #{rec.rang}
+                              </span>
+                              <div>
+                                <h3 className={`font-semibold text-base ${isTop1 ? 'text-white' : 'text-slate-800'}`}>
+                                  {rec.branche}
+                                </h3>
+                                {isTop1 && (
+                                  <span className="inline-block mt-1 font-mono text-[10px] uppercase tracking-widest text-emerald-400 font-medium">
+                                    ★ Branche Idéale
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <h3 className={`font-sans font-medium text-sm ${isTop1 ? 'font-semibold text-base' : ''}`} style={{ color: INK }}>
-                              {rec.filiere}
-                            </h3>
+                            <div className="text-right">
+                              <span className={`font-mono text-lg font-bold ${isTop1 ? 'text-emerald-400' : 'text-slate-900'}`}>
+                                {rec.probabilite}%
+                              </span>
+                            </div>
                           </div>
-                          <span
-                            className={`font-mono font-semibold shrink-0 pl-2 ${isTop1 ? 'text-2xl' : 'text-lg'}`}
-                            style={{ color: isTop1 ? ACCENT : INK }}
-                          >
-                            {rec.probabilite}%
-                          </span>
                         </div>
-
-                        <div className="w-full h-1.5 rounded-full overflow-hidden relative" style={{ backgroundColor: LINE }}>
-                          <div
-                            className={`h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden ${
-                              isTop1 ? 'shine-effect' : ''
-                            }`}
-                            style={{ width: `${rec.probabilite}%`, backgroundColor: isTop1 ? ACCENT : INK_SOFT }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
-          </section>
-        </div>
+              )}
+            </section>
+          </div>
+        )}
       </main>
     </div>
   );
