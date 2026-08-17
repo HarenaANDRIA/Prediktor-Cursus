@@ -66,8 +66,8 @@ const SERIES = {
   scientifique: {
     label: 'Scientifique',
     coef6:[],
-    coef5: ['mathematiques', 'physique', 'chimie', 'statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre', 'biologie_appliquee_et_biotechnologie'],
-    coef4: ['test_psychotechnique'],
+    coef5: ['mathematiques', 'physique', 'chimie', 'test_psychotechnique', 'statistiques_et_probabilites', 'science_de_la_vie_et_de_la_terre', 'biologie_appliquee_et_biotechnologie'],
+    coef4: [],
     coef3: ['dessin_technique', 'francais', 'anglais'],
   },
   litteraire: {
@@ -330,11 +330,13 @@ export default function App() {
                         className="flex items-baseline justify-between py-2.5 border-b"
                         style={{ borderColor: LINE, borderBottomStyle: 'dotted' }}
                       >
-                        <label htmlFor={m.id} className="font-sans text-sm pr-3 flex items-center gap-2" style={{ color: INK }}>
-                          {m.label}
+                        <div className="flex items-center gap-2 pr-2 min-w-0">
+                          <label htmlFor={m.id} className="font-sans text-sm truncate" style={{ color: INK }}>
+                            {m.label}
+                          </label>
                           {serie !== 'aucune' && (
                             <span
-                              className="font-mono text-[9px] px-1.5 py-0.5 rounded-full border"
+                              className="font-mono text-[9px] px-1.5 py-0.5 rounded-full border shrink-0 inline-flex items-center justify-center min-w-[24px] h-[18px]"
                               style={
                                 coef >= 4
                                   ? { color: ACCENT, borderColor: ACCENT, backgroundColor: ACCENT_SOFT }
@@ -344,7 +346,7 @@ export default function App() {
                               ×{coef}
                             </span>
                           )}
-                        </label>
+                        </div>
                         <input
                           id={m.id}
                           type="number"
