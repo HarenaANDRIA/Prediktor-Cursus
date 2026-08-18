@@ -10,9 +10,7 @@ from xgboost import XGBClassifier
 
 os.makedirs('models', exist_ok=True)
 
-
 def entrainer_et_evaluer_filiere(data_path, model_output_name, encoder_output_name, report_prefix):
-    """Entraîne et évalue XGBoost + RandomForest pour prédire la FILIÈRE BAC."""
     print("=" * 70)
     print(f"🚀 ENTRAÎNEMENT & SÉLECTION DE MODÈLE (FILIÈRE) : {data_path}")
     print("=" * 70)
@@ -49,8 +47,8 @@ def entrainer_et_evaluer_filiere(data_path, model_output_name, encoder_output_na
                 ('classifier', XGBClassifier(random_state=42, eval_metric='mlogloss'))
             ]),
             "param_grid": {
-                'classifier__n_estimators': [100, 150, 200],
-                'classifier__max_depth': [4, 6, 8],
+                'classifier__n_estimators': [100, 150],
+                'classifier__max_depth': [4, 6],
                 'classifier__learning_rate': [0.05, 0.1],
             },
         },
@@ -60,9 +58,8 @@ def entrainer_et_evaluer_filiere(data_path, model_output_name, encoder_output_na
                 ('classifier', RandomForestClassifier(random_state=42))
             ]),
             "param_grid": {
-                'classifier__n_estimators': [200, 300, 400],
-                'classifier__max_depth': [None, 10, 20],
-                'classifier__min_samples_split': [2, 5],
+                'classifier__n_estimators': [150, 250],
+                'classifier__max_depth': [None, 10],
             },
         },
     }
@@ -79,7 +76,6 @@ def entrainer_et_evaluer_filiere(data_path, model_output_name, encoder_output_na
         )
         grid_search.fit(X_train, y_train)
         results[name] = grid_search
-        print(f"   → Meilleur F1-Score macro (CV) : {grid_search.best_score_ * 100:.2f}%")
 
     best_model_name = max(results, key=lambda name: results[name].best_score_)
     best_grid_search = results[best_model_name]
@@ -89,25 +85,20 @@ def entrainer_et_evaluer_filiere(data_path, model_output_name, encoder_output_na
 
     y_pred = best_pipeline.predict(X_test)
     test_f1 = f1_score(y_test, y_pred, average='macro')
-    print(f"🎯 F1-Score Macro Test ({best_model_name}) : {test_f1 * 100:.2f}%")
-    print(classification_report(y_test, y_pred, target_names=label_encoder.classes_))
+    print(f"🎯 F1-Score Macro Test : {test_f1 * 100:.2f}%")
 
     joblib.dump(best_pipeline, f'models/{model_output_name}')
     with open(f'models/{report_prefix}_model_report.txt', 'w', encoding='utf-8') as f:
-        f.write(f"Dataset : {data_path}\n")
-        f.write(f"Modèle retenu : {best_model_name}\n")
+        f.write(f"Dataset : {data_path}\nModèle retenu : {best_model_name}\n")
         f.write(f"F1-Score macro (CV) : {best_grid_search.best_score_ * 100:.2f}%\n")
-        f.write(f"F1-Score macro (Test) : {test_f1 * 100:.2f}%\n")
-        f.write(f"Meilleurs paramètres : {best_grid_search.best_params_}\n\n")
+        f.write(f"F1-Score macro (Test) : {test_f1 * 100:.2f}%\n\n")
         f.write(classification_report(y_test, y_pred, target_names=label_encoder.classes_))
 
     print(f"✅ Pipeline sauvegardé dans 'models/{model_output_name}'.\n")
 
-
 def entrainer_et_evaluer_branche(data_path, model_output_name, encoder_output_name, report_prefix):
-    """Entraîne et évalue XGBoost + RandomForest pour prédire la BRANCHE (avec filiere en Feature)."""
     print("=" * 70)
-    print(f"🚀 ENTRAÎNEMENT & SÉLECTION DE MODÈLE (BRANCHE + FILIÈRE) : {data_path}")
+    print(f"🚀 ENTRAÎNEMENT & SÉLECTION DE MODÈLE (BRANCHE) : {data_path}")
     print("=" * 70)
 
     if not os.path.exists(data_path):
@@ -117,18 +108,13 @@ def entrainer_et_evaluer_branche(data_path, model_output_name, encoder_output_na
     df = pd.read_csv(data_path, sep=';', decimal=',')
     target_col = 'branche_recommandee'
 
-    # 1. Séparation des features (X) et de la cible (y)
     X_raw = df.drop(columns=[target_col])
     y_raw = df[target_col]
 
-    # 2. Conversion One-Hot Encoding de la colonne 'filiere'
     X = pd.get_dummies(X_raw, columns=['filiere'], drop_first=False)
-
-    # Convertir toutes les colonnes numériques en float
     for col in X.columns:
         X[col] = pd.to_numeric(X[col], errors='coerce').astype(float)
 
-    # 3. Encodage de la variable cible
     label_encoder = LabelEncoder()
     y = label_encoder.fit_transform(y_raw)
 
@@ -147,27 +133,14 @@ def entrainer_et_evaluer_branche(data_path, model_output_name, encoder_output_na
                 ('classifier', XGBClassifier(random_state=42, eval_metric='mlogloss'))
             ]),
             "param_grid": {
-                'classifier__n_estimators': [100, 150, 200],
-                'classifier__max_depth': [4, 6, 8],
-                'classifier__learning_rate': [0.05, 0.1],
-            },
-        },
-        "RandomForest": {
-            "pipeline": Pipeline([
-                ('scaler', StandardScaler()),
-                ('classifier', RandomForestClassifier(random_state=42))
-            ]),
-            "param_grid": {
-                'classifier__n_estimators': [200, 300, 400],
-                'classifier__max_depth': [None, 10, 20],
-                'classifier__min_samples_split': [2, 5],
+                'classifier__n_estimators': [100, 150],
+                'classifier__max_depth': [4, 6],
             },
         },
     }
 
     results = {}
     for name, cfg in candidates.items():
-        print(f"\n🔎 Recherche d'hyperparamètres pour {name}...")
         grid_search = GridSearchCV(
             estimator=cfg["pipeline"],
             param_grid=cfg["param_grid"],
@@ -177,41 +150,25 @@ def entrainer_et_evaluer_branche(data_path, model_output_name, encoder_output_na
         )
         grid_search.fit(X_train, y_train)
         results[name] = grid_search
-        print(f"   → Meilleur F1-Score macro (CV) : {grid_search.best_score_ * 100:.2f}%")
 
     best_model_name = max(results, key=lambda name: results[name].best_score_)
     best_grid_search = results[best_model_name]
     best_pipeline = best_grid_search.best_estimator_
 
-    print(f"\n🏆 Modèle retenu : {best_model_name} (F1 macro CV = {best_grid_search.best_score_ * 100:.2f}%)")
-
-    y_pred = best_pipeline.predict(X_test)
-    test_f1 = f1_score(y_test, y_pred, average='macro')
-    print(f"🎯 F1-Score Macro Test ({best_model_name}) : {test_f1 * 100:.2f}%")
-    print(classification_report(y_test, y_pred, target_names=label_encoder.classes_))
-
     joblib.dump(best_pipeline, f'models/{model_output_name}')
-    with open(f'models/{report_prefix}_model_report.txt', 'w', encoding='utf-8') as f:
-        f.write(f"Dataset : {data_path}\n")
-        f.write(f"Modèle retenu : {best_model_name}\n")
-        f.write(f"F1-Score macro (CV) : {best_grid_search.best_score_ * 100:.2f}%\n")
-        f.write(f"F1-Score macro (Test) : {test_f1 * 100:.2f}%\n")
-        f.write(f"Meilleurs paramètres : {best_grid_search.best_params_}\n\n")
-        f.write(classification_report(y_test, y_pred, target_names=label_encoder.classes_))
-
-    print(f"✅ Pipeline sauvegardé dans 'models/{model_output_name}'.\n")
-
+    print(f"✅ Pipeline Branche sauvegardé dans 'models/{model_output_name}'.\n")
 
 if __name__ == '__main__':
-    # 1. Modèle pour dataset_cleaned.csv (Filières Bac)
-    entrainer_et_evaluer_filiere(
-        data_path='data/processed/dataset_cleaned.csv',
-        model_output_name='best_pipeline_filiere.joblib',
-        encoder_output_name='label_encoder.joblib',
-        report_prefix='filiere'
-    )
+    series_list = ['aucune', 'scientifique', 'litteraire', 'ose']
 
-    # 2. Modèle pour dataset_branch_cleaned.csv (Branches par Filière)
+    for serie in series_list:
+        entrainer_et_evaluer_filiere(
+            data_path=f'data/processed/cleaned_bac_{serie}.csv',
+            model_output_name=f'best_pipeline_filiere_{serie}.joblib',
+            encoder_output_name=f'label_encoder_filiere_{serie}.joblib',
+            report_prefix=f'filiere_{serie}'
+        )
+
     entrainer_et_evaluer_branche(
         data_path='data/processed/dataset_branch_cleaned.csv',
         model_output_name='best_pipeline_branch.joblib',

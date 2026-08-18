@@ -14,120 +14,247 @@ const MATIERES = [
   { id: 'test_psychotechnique', label: 'Test Psychotechnique' }
 ];
 
+const SERIES = {
+  aucune: {
+    label: 'Aucune',
+    matieres: ['mathematiques', 'physique', 'chimie', 'science_de_la_vie_et_de_la_terre', 'statistiques_et_probabilites', 'francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique']
+  },
+  scientifique: {
+    label: 'Scientifique',
+    matieres: ['mathematiques', 'physique', 'chimie', 'science_de_la_vie_et_de_la_terre', 'statistiques_et_probabilites', 'francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique']
+  },
+  litteraire: {
+    label: 'Littéraire',
+    matieres: ['francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique', 'statistiques_et_probabilites']
+  },
+  ose: {
+    label: 'OSE',
+    matieres: ['mathematiques', 'francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique', 'statistiques_et_probabilites']
+  },
+};
+
 const FILIERES_CONFIG = {
   'science_des_donnees_et_intelligence_artificielle': {
-    label: 'Science des Données & IA',
+    label: 'Science des Données et Intelligence Artificielle',
+    datasetLabel: 'Science des Données et Intelligence Artificielle',
     modules: [
-      { id: 'algorithmique_python', label: 'Algorithmique & Python' },
-      { id: 'sql_bases_de_donnees', label: 'SQL & Bases de Données' },
-      { id: 'algebre_et_analyse', label: 'Algèbre & Analyse' },
-      { id: 'langages_web', label: 'Langages Web' },
-      { id: 'linux', label: 'Systèmes Linux' },
-      { id: 'codage', label: 'Théorie du Codage' },
-      { id: 'cryptographie', label: 'Cryptographie' },
-      { id: 'reseaux informatiques', label: 'Réseaux Informatiques' }
-    ]
-  },
-  'medecine_et_pharmacie': {
-    label: 'Médecine & Pharmacie',
-    modules: [
-      { id: 'anatomie', label: 'Anatomie' },
-      { id: 'physiologie', label: 'Physiologie' },
-      { id: 'biochimie', label: 'Biochimie' },
-      { id: 'histologie', label: 'Histologie' },
-      { id: 'anatomie_pathologique', label: 'Anatomie Pathologique' }
-    ]
-  },
-  'agronomie_et_biotechnologie': {
-    label: 'Agronomie & Biotechnologie',
-    modules: [
-      { id: 'genetique_biologie_moleculaire', label: 'Génétique & Biologie Moléculaire' },
-      { id: 'physiologie_ecologie', label: 'Physiologie & Écologie' },
-      { id: 'biochimie', label: 'Biochimie' },
-      { id: 'statistiques_agricoles_et_modelisation', label: 'Statistiques Agricoles' }
-    ]
-  },
-  'sciences_environnementales_et_science_marine': {
-    label: 'Sciences Environnementales & Marine',
-    modules: [
-      { id: 'oceanographie_et_climatologie', label: 'Océanographie & Climatologie' },
-      { id: 'ecologie_marine', label: 'Écologie Marine' },
-      { id: 'geologie_sedimentaire_et_hydrologie', label: 'Géologie & Hydrologie' }
+      { id: 'mathematiques_algebre_lineaire_calcul_di', label: 'Mathématiques : algèbre linéaire, calcul différentiel, optimisation' },
+      { id: 'probabilites_et_statistiques', label: 'Probabilités et statistiques' },
+      { id: 'programmation_python_r_c', label: 'Programmation (Python, R, C++)' },
+      { id: 'structures_de_donnees_et_algorithmes', label: 'Structures de données et algorithmes' },
+      { id: 'bases_de_donnees_et_gestion_de_l_informa', label: 'Bases de données et gestion de l\'information' },
+      { id: 'apprentissage_automatique_machine_learni', label: 'Apprentissage automatique (Machine Learning)' },
+      { id: 'apprentissage_profond_deep_learning', label: 'Apprentissage profond (Deep Learning)' },
+      { id: 'traitement_du_langage_naturel_nlp', label: 'Traitement du langage naturel (NLP)' },
+      { id: 'vision_par_ordinateur', label: 'Vision par ordinateur' },
+      { id: 'big_data_et_cloud_computing', label: 'Big Data et Cloud Computing' },
+      { id: 'visualisation_de_donnees_et_business_int', label: 'Visualisation de données et Business Intelligence' },
+      { id: 'ethique_et_gouvernance_de_l_ia', label: 'Éthique et gouvernance de l\'IA' },
+      { id: 'systemes_distribues_et_infrastructure_it', label: 'Systèmes distribués et infrastructure IT' },
     ]
   },
   'tourisme_et_hotellerie': {
-    label: 'Tourisme & Hôtellerie',
+    label: 'Tourisme et Hôtellerie',
+    datasetLabel: 'Tourisme et Hôtellerie',
     modules: [
-      { id: 'management_interculturel', label: 'Management Interculturel' },
-      { id: 'comptabilite', label: 'Comptabilité' },
-      { id: 'geographie', label: 'Géographie' },
-      { id: 'droit', label: 'Droit' },
-      { id: 'anglais', label: 'Anglais' },
-      { id: 'francais', label: 'Français' },
-      { id: 'allemand', label: 'Allemand' },
-      { id: 'espagnol', label: 'Espagnol' }
+      { id: 'gestion_hoteliere_et_gestion_de_la_resta', label: 'Gestion hôtelière et gestion de la restauration' },
+      { id: 'marketing_touristique_et_revenue_managem', label: 'Marketing touristique et revenue management' },
+      { id: 'gestion_des_evenements_mice', label: 'Gestion des événements (MICE)' },
+      { id: 'langues_etrangeres_appliquees', label: 'Langues étrangères appliquées' },
+      { id: 'communication_et_relation_client', label: 'Communication et relation client' },
+      { id: 'geographie_et_culture_touristique', label: 'Géographie et culture touristique' },
+      { id: 'droit_du_tourisme_et_de_l_hotellerie', label: 'Droit du tourisme et de l\'hôtellerie' },
+      { id: 'comptabilite_et_finance_hoteliere', label: 'Comptabilité et finance hôtelière' },
+      { id: 'gestion_des_ressources_humaines_en_hotel', label: 'Gestion des ressources humaines en hôtellerie' },
+      { id: 'developpement_durable_et_ecotourisme', label: 'Développement durable et écotourisme' },
+      { id: 'technologies_de_l_information_touristiqu', label: 'Technologies de l\'information touristique (TIC)' },
     ]
   },
-  'langues_et_communication': {
-    label: 'Langues & Communication',
+  'science_actuarielle': {
+    label: 'Science Actuarielle',
+    datasetLabel: 'Science Actuarielle',
     modules: [
-      { id: 'langues_etrangeres', label: 'Langues Étrangères' },
-      { id: 'semiologie', label: 'Sémiologie' },
-      { id: 'journalisme_et_redaction_web', label: 'Journalisme & Rédaction Web' },
-      { id: 'audiovisuel_et_multimedia', label: 'Audiovisuel & Multimédia' }
+      { id: 'mathematiques_financieres', label: 'Mathématiques financières' },
+      { id: 'probabilites_et_statistiques', label: 'Probabilités et statistiques' },
+      { id: 'theorie_du_risque_et_modeles_de_survie', label: 'Théorie du risque et modèles de survie' },
+      { id: 'econometrie', label: 'Économétrie' },
+      { id: 'droit_des_assurances_et_reglementation', label: 'Droit des assurances et réglementation' },
+      { id: 'comptabilite_actuarielle_et_finance_d_en', label: 'Comptabilité actuarielle et finance d\'entreprise' },
+      { id: 'programmation_actuarielle_r_python_sas_v', label: 'Programmation actuarielle (R, Python, SAS, VBA)' },
+      { id: 'gestion_des_risques_erm', label: 'Gestion des risques (ERM)' },
+      { id: 'actuariat_vie', label: 'Actuariat vie' },
+      { id: 'actuariat_non_vie_iard', label: 'Actuariat non-vie / IARD' },
+    ]
+  },
+  'droit_et_science_politique': {
+    label: 'Droit et Science Politique',
+    datasetLabel: 'Droit et Science Politique',
+    modules: [
+      { id: 'droit_civil', label: 'Droit civil' },
+      { id: 'droit_penal', label: 'Droit pénal' },
+      { id: 'droit_constitutionnel', label: 'Droit constitutionnel' },
+      { id: 'droit_administratif', label: 'Droit administratif' },
+      { id: 'droit_international_public_et_prive', label: 'Droit international public et privé' },
+      { id: 'droit_des_affaires_et_droit_commercial', label: 'Droit des affaires et droit commercial' },
+      { id: 'institutions_politiques_comparees', label: 'Institutions politiques comparées' },
+      { id: 'relations_internationales', label: 'Relations internationales' },
+      { id: 'sociologie_politique', label: 'Sociologie politique' },
+      { id: 'economie_politique', label: 'Économie politique' },
+      { id: 'histoire_du_droit_et_methodologie_juridi', label: 'Histoire du droit et méthodologie juridique' },
+    ]
+  },
+  'science_environnementale': {
+    label: 'Science Environnementale',
+    datasetLabel: 'Science Environnementale',
+    modules: [
+      { id: 'ecologie_generale', label: 'Écologie générale' },
+      { id: 'biologie_et_sciences_de_la_vie', label: 'Biologie et sciences de la vie' },
+      { id: 'chimie_de_l_environnement', label: 'Chimie de l\'environnement' },
+      { id: 'geologie_et_sciences_de_la_terre', label: 'Géologie et sciences de la Terre' },
+      { id: 'climatologie_et_sciences_du_climat', label: 'Climatologie et sciences du climat' },
+      { id: 'gestion_des_ressources_naturelles', label: 'Gestion des ressources naturelles' },
+      { id: 'droit_de_l_environnement', label: 'Droit de l\'environnement' },
+      { id: 'systemes_d_information_geographique_sig', label: 'Systèmes d\'information géographique (SIG)' },
+      { id: 'economie_de_l_environnement', label: 'Économie de l\'environnement' },
+      { id: 'toxicologie_et_pollution', label: 'Toxicologie et pollution' },
+    ]
+  },
+  'science_marine': {
+    label: 'Science Marine',
+    datasetLabel: 'Science Marine',
+    modules: [
+      { id: 'oceanographie_physique_et_chimique', label: 'Océanographie physique et chimique' },
+      { id: 'biologie_marine', label: 'Biologie marine' },
+      { id: 'ecologie_marine_et_conservation', label: 'Écologie marine et conservation' },
+      { id: 'chimie_marine', label: 'Chimie marine' },
+      { id: 'geologie_marine', label: 'Géologie marine' },
+      { id: 'gestion_des_peches_et_ressources_halieut', label: 'Gestion des pêches et ressources halieutiques' },
+      { id: 'aquaculture', label: 'Aquaculture' },
+      { id: 'droit_maritime_et_gestion_des_zones_coti', label: 'Droit maritime et gestion des zones côtières' },
+      { id: 'cartographie_et_technologies_marines_sig', label: 'Cartographie et technologies marines (SIG)' },
+    ]
+  },
+  'anthropologie': {
+    label: 'Anthropologie',
+    datasetLabel: 'Anthropologie',
+    modules: [
+      { id: 'anthropologie_sociale_et_culturelle', label: 'Anthropologie sociale et culturelle' },
+      { id: 'anthropologie_physique_biologique', label: 'Anthropologie physique et biologique' },
+      { id: 'ethnographie_et_methodes_de_terrain', label: 'Ethnographie et méthodes de terrain' },
+      { id: 'linguistique_anthropologique', label: 'Linguistique anthropologique' },
+      { id: 'anthropologie_de_la_parente_et_des_struc', label: 'Anthropologie de la parenté et des structures sociales' },
+      { id: 'anthropologie_religieuse', label: 'Anthropologie religieuse' },
+      { id: 'anthropologie_economique_et_du_developpe', label: 'Anthropologie économique et du développement' },
+      { id: 'histoire_de_l_anthropologie_et_theories', label: 'Histoire de l\'anthropologie et théories' },
+    ]
+  },
+  'archeologie': {
+    label: 'Archéologie',
+    datasetLabel: 'Archéologie',
+    modules: [
+      { id: 'prehistoire_et_protohistoire', label: 'Préhistoire et protohistoire' },
+      { id: 'archeologie_classique_et_antique', label: 'Archéologie classique et antique' },
+      { id: 'methodes_de_fouille_et_prospection', label: 'Méthodes de fouille et prospection' },
+      { id: 'ceramologie_et_etude_du_mobilier', label: 'Céramologie et étude du mobilier' },
+      { id: 'epigraphie_et_paleographie', label: 'Épigraphie et paléographie' },
+      { id: 'anthropologie_physique_appliquee_a_l_arc', label: 'Anthropologie physique appliquée à l\'archéologie' },
+      { id: 'conservation_restauration_du_patrimoine', label: 'Conservation et restauration du patrimoine' },
+      { id: 'archeometrie_et_datation_c14_dendrochron', label: 'Archéométrie et datation (C14, dendrochronologie)' },
+      { id: 'histoire_de_l_art_ancien', label: 'Histoire de l\'art ancien' },
+    ]
+  },
+  'agronomie_et_biotechnologie': {
+    label: 'Agronomie et Biotechnologie',
+    datasetLabel: 'Agronomie et Biotechnologie',
+    modules: [
+      { id: 'biologie_vegetale_et_physiologie_des_pla', label: 'Biologie végétale et physiologie des plantes' },
+      { id: 'genetique_et_genie_genetique', label: 'Génétique et génie génétique' },
+      { id: 'microbiologie', label: 'Microbiologie' },
+      { id: 'sciences_du_sol_pedologie', label: 'Sciences du sol (Pédologie)' },
+      { id: 'phytopathologie', label: 'Phytopathologie' },
+      { id: 'zootechnie_et_production_animale', label: 'Zootechnie et production animale' },
+      { id: 'biotechnologie_vegetale_et_animale', label: 'Biotechnologie végétale et animale' },
+      { id: 'agroeconomie_et_gestion_d_exploitation', label: 'Agroéconomie et gestion d\'exploitation' },
+      { id: 'agroalimentaire_et_transformation', label: 'Agroalimentaire et transformation' },
+      { id: 'machinisme_et_technologies_agricoles', label: 'Machinisme et technologies agricoles' },
+    ]
+  },
+  'ingenierie_et_science_generale': {
+    label: 'Ingénierie et Science Générale',
+    datasetLabel: 'Ingénierie et Science Générale',
+    modules: [
+      { id: 'mathematiques_appliquees', label: 'Mathématiques appliquées' },
+      { id: 'physique_generale_et_appliquee', label: 'Physique générale et appliquée' },
+      { id: 'mecanique_et_resistance_des_materiaux', label: 'Mécanique et résistance des matériaux' },
+      { id: 'electricite_et_electronique', label: 'Électricité et électronique' },
+      { id: 'thermodynamique_et_energetique', label: 'Thermodynamique et énergétique' },
+      { id: 'informatique_et_programmation', label: 'Informatique et programmation' },
+      { id: 'genie_civil_et_structures', label: 'Génie civil et structures' },
+      { id: 'genie_electrique_et_telecommunications', label: 'Génie électrique et télécommunications' },
+      { id: 'chimie_industrielle', label: 'Chimie industrielle' },
+      { id: 'gestion_de_projet_et_methodologie_indust', label: 'Gestion de projet et méthodologie industrielle' },
     ]
   },
   'sociologie': {
     label: 'Sociologie',
+    datasetLabel: 'Sociologie',
     modules: [
-      { id: 'theories_sociologiques_et_philosophie_sociale', label: 'Théories Sociologiques' },
-      { id: 'statistiques_methodologie_quantitative', label: 'Méthodologie Quantitative' },
-      { id: 'demographie_sociologie_famille', label: 'Démographie & Famille' }
+      { id: 'theories_sociologiques', label: 'Théories sociologiques' },
+      { id: 'methodes_quantitatives_et_statistiques_s', label: 'Méthodes quantitatives et statistiques sociales' },
+      { id: 'methodes_qualitatives_entretiens_observa', label: 'Méthodes qualitatives (entretiens, observations)' },
+      { id: 'sociologie_urbaine', label: 'Sociologie urbaine' },
+      { id: 'sociologie_du_travail_et_des_organisatio', label: 'Sociologie du travail et des organisations' },
+      { id: 'sociologie_de_la_famille', label: 'Sociologie de la famille' },
+      { id: 'sociologie_politique', label: 'Sociologie politique' },
+      { id: 'demographie', label: 'Démographie' },
+      { id: 'sociologie_de_l_education', label: 'Sociologie de l\'éducation' },
     ]
   },
-  'droit_et_sciences_politiques': {
-    label: 'Droit & Sciences Politiques',
+  'langues_et_communication': {
+    label: 'Langues et Communication',
+    datasetLabel: 'Langues et Communication',
     modules: [
-      { id: 'droit_civil_et_procedure_civile', label: 'Droit Civil & Procédure' },
-      { id: 'droit_penal_procedure_penale', label: 'Droit Pénal' },
-      { id: 'droit_administratif_constitutionnel', label: 'Droit Administratif & Const.' },
-      { id: 'droit_commercial', label: 'Droit Commercial' }
-    ]
-  },
-  'sciences_actuarielles': {
-    label: 'Sciences Actuarielles',
-    modules: [
-      { id: 'probabilites_statistiques_appliquees', label: 'Probabilités Appliquées' },
-      { id: 'mathematiques_financieres_finance_marche', label: 'Mathématiques Financières' },
-      { id: 'droit_assurances_reglementation', label: 'Droit des Assurances' }
-    ]
-  },
-  'ingenierie_et_science_generale': {
-    label: 'Ingénierie & Science Générale',
-    modules: [
-      { id: 'resistance_des_materiaux', label: 'Résistance des Matériaux (RDM)' },
-      { id: 'mecanique_des_fluides', label: 'Mécanique des Fluides' },
-      { id: 'thermodynamique_energetique', label: 'Thermodynamique' },
-      { id: 'electronique', label: 'Électronique' },
-      { id: 'automatique', label: 'Automatique' },
-      { id: 'electricite', label: 'Électricité' },
-      { id: 'mathematiques_discretes_et_algorithmique', label: 'Maths Discrètes & Algo' }
+      { id: 'linguistique_generale', label: 'Linguistique générale' },
+      { id: 'litterature', label: 'Littérature' },
+      { id: 'traduction_et_interpretation', label: 'Traduction et interprétation' },
+      { id: 'communication_interculturelle', label: 'Communication interculturelle' },
+      { id: 'journalisme', label: 'Journalisme' },
+      { id: 'communication_digitale_et_reseaux_sociau', label: 'Communication digitale et réseaux sociaux' },
+      { id: 'redaction_professionnelle_et_technique', label: 'Rédaction professionnelle et technique' },
+      { id: 'medias_et_audiovisuel', label: 'Médias et audiovisuel' },
+      { id: 'relations_publiques', label: 'Relations publiques' },
     ]
   },
   'psychologie': {
     label: 'Psychologie',
+    datasetLabel: 'Psychologie',
     modules: [
-      { id: 'psychopathologie_clinique', label: 'Psychopathologie Clinique' },
-      { id: 'neurosciences_sociales', label: 'Neurosciences Sociales' }
+      { id: 'psychologie_generale', label: 'Psychologie générale' },
+      { id: 'psychologie_du_developpement', label: 'Psychologie du développement' },
+      { id: 'psychologie_clinique_et_psychopathologie', label: 'Psychologie clinique et psychopathologie' },
+      { id: 'psychologie_sociale', label: 'Psychologie sociale' },
+      { id: 'psychologie_cognitive', label: 'Psychologie cognitive' },
+      { id: 'neuropsychologie', label: 'Neuropsychologie' },
+      { id: 'psychologie_du_travail_et_des_organisati', label: 'Psychologie du travail et des organisations' },
+      { id: 'psychometrie_et_methodologie_de_recherch', label: 'Psychométrie et méthodologie de recherche' },
     ]
   },
-  'anthropologie_ou_archeologie': {
-    label: 'Anthropologie ou Archéologie',
+  'medecine_et_pharmacie': {
+    label: 'Médecine et Pharmacie',
+    datasetLabel: 'Médecine et Pharmacie',
     modules: [
-      { id: 'paleoanthropologie_et_osteologie', label: 'Paléoanthropologie & Ostéologie' },
-      { id: 'prehistoire_geoarcheologie', label: 'Préhistoire & Géoarchéologie' },
-      { id: 'ethnologie', label: 'Ethnologie' },
-      { id: 'anthropologie_culturelle', label: 'Anthropologie Culturelle' }
+      { id: 'anatomie', label: 'Anatomie' },
+      { id: 'physiologie', label: 'Physiologie' },
+      { id: 'biochimie', label: 'Biochimie' },
+      { id: 'microbiologie_et_immunologie', label: 'Microbiologie et immunologie' },
+      { id: 'pharmacologie', label: 'Pharmacologie' },
+      { id: 'pathologie_generale', label: 'Pathologie générale' },
+      { id: 'semiologie_et_pratique_clinique', label: 'Sémiologie et pratique clinique' },
+      { id: 'pharmacie_galenique', label: 'Pharmacie galénique' },
+      { id: 'chimie_therapeutique', label: 'Chimie thérapeutique' },
+      { id: 'toxicologie', label: 'Toxicologie' },
+      { id: 'sante_publique_et_epidemiologie', label: 'Santé publique et épidémiologie' },
+      { id: 'stages_cliniques_pratiques', label: 'Stages cliniques pratiques' },
     ]
   }
 };
@@ -138,55 +265,6 @@ const createDefaultModuleNotes = (filiereKey) => {
   const modules = FILIERES_CONFIG[filiereKey]?.modules || [];
   return modules.reduce((acc, mod) => ({ ...acc, [mod.id]: 10 }), {});
 };
-
-const SERIES = {
-  aucune: { label: 'Aucune', coef6: [], coef5: [], coef4: [], coef3: [] },
-  scientifique: {
-    label: 'Scientifique',
-    coef6: ['mathematiques'],
-    coef5: ['physique', 'chimie', 'statistiques_et_probabilites'],
-    coef4: ['test_psychotechnique', 'science_de_la_vie_et_de_la_terre'],
-    coef3: [],
-  },
-  litteraire: {
-    label: 'Littéraire',
-    coef6: ['francais', 'anglais'],
-    coef5: [],
-    coef4: ['philosophie', 'histoire_et_geographie'],
-    coef3: ['statistiques_et_probabilites', 'test_psychotechnique'],
-  },
-  ose: {
-    label: 'OSE',
-    coef6: ['statistiques_et_probabilites'],
-    coef5: [],
-    coef4: ['histoire_et_geographie', 'francais', 'anglais'],
-    coef3: ['mathematiques'],
-  },
-};
-
-function getCoefficient(subjectId, serieKey) {
-  const serie = SERIES[serieKey];
-  if (!serie || serieKey === 'aucune') return 1;
-  if (serie.coef6 && serie.coef6.includes(subjectId)) return 6;
-  if (serie.coef5.includes(subjectId)) return 5;
-  if (serie.coef4.includes(subjectId)) return 4;
-  if (serie.coef3.includes(subjectId)) return 3;
-  return 2;
-}
-
-function computeNotesForModel(notes, serieKey) {
-  const coefs = MATIERES.map(m => getCoefficient(m.id, serieKey));
-  const meanCoef = coefs.reduce((a, b) => a + b, 0) / coefs.length;
-
-  const adjusted = {};
-  MATIERES.forEach(m => {
-    const note = typeof notes[m.id] === 'number' ? notes[m.id] : 0;
-    const coef = getCoefficient(m.id, serieKey);
-    const raw = meanCoef > 0 ? (note * coef) / meanCoef : note;
-    adjusted[m.id] = Math.max(0, Math.min(20, Math.round(raw * 100) / 100));
-  });
-  return adjusted;
-}
 
 const INK = '#1E2A3A';
 const INK_SOFT = '#55606B';
@@ -208,7 +286,6 @@ export default function App() {
     }, 150);
   };
 
-  // États Post-Bac
   const [notes, setNotes] = useState(DEFAULT_NOTES);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -217,13 +294,14 @@ export default function App() {
   const [rejected, setRejected] = useState(false);
   const [serie, setSerie] = useState('aucune');
 
-  // États Branches Universitaires
   const initialFiliereKey = Object.keys(FILIERES_CONFIG)[0];
   const [selectedFiliereKey, setSelectedFiliereKey] = useState(initialFiliereKey);
   const [moduleNotes, setModuleNotes] = useState(() => createDefaultModuleNotes(initialFiliereKey));
   const [branchResults, setBranchResults] = useState(null);
   const [branchLoading, setBranchLoading] = useState(false);
   const [branchError, setBranchError] = useState(null);
+
+  const activeMatieres = MATIERES.filter(m => SERIES[serie].matieres.includes(m.id));
 
   const handleInputChange = (id, value) => {
     const val = parseFloat(value);
@@ -263,21 +341,10 @@ export default function App() {
     setBranchError(null);
   };
 
-  // Calculs Moyenne Post-Bac
-  const valuesBac = Object.values(notes).filter(v => typeof v === 'number');
+  const valuesBac = activeMatieres.map(m => notes[m.id]).filter(v => typeof v === 'number');
   const moyNumBac = valuesBac.length ? valuesBac.reduce((a, b) => a + b, 0) / valuesBac.length : 0;
   const moyenneBac = valuesBac.length ? moyNumBac.toFixed(2) : '0.00';
 
-  const weightedTotals = MATIERES.reduce((acc, m) => {
-    const note = notes[m.id];
-    if (typeof note !== 'number') return acc;
-    const coef = getCoefficient(m.id, serie);
-    return { sumNotes: acc.sumNotes + note * coef, sumCoefs: acc.sumCoefs + coef };
-  }, { sumNotes: 0, sumCoefs: 0 });
-  const moyennePondereeNum = weightedTotals.sumCoefs ? weightedTotals.sumNotes / weightedTotals.sumCoefs : 0;
-  const moyennePonderee = weightedTotals.sumCoefs ? moyennePondereeNum.toFixed(2) : '0.00';
-
-  // Calculs Moyenne Modules Universitaires
   const currentModules = FILIERES_CONFIG[selectedFiliereKey]?.modules || [];
   const moduleValues = currentModules
     .map(mod => moduleNotes[mod.id])
@@ -292,8 +359,8 @@ export default function App() {
     setRejected(false);
 
     try {
-      const notesForModel = computeNotesForModel(notes, serie);
-      const response = await axios.post('http://localhost:8000/predict', notesForModel);
+      const payload = { serie, ...notes };
+      const response = await axios.post('http://localhost:8000/predict', payload);
       setResults(response.data.recommandations);
     } catch (err) {
       setError("Impossible de contacter le serveur d'IA (http://localhost:8000).");
@@ -309,7 +376,7 @@ export default function App() {
 
     try {
       const response = await axios.post('http://localhost:8000/predict-branch', {
-        filiere: selectedFiliereKey,
+        filiere: FILIERES_CONFIG[selectedFiliereKey]?.datasetLabel || selectedFiliereKey,
         notes_modules: moduleNotes
       });
       setBranchResults(response.data.recommandations);
@@ -400,13 +467,11 @@ export default function App() {
               Prédiktor Cursus
             </h1>
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] mt-1" style={{ color: INK_SOFT }}>
-              Système d'orientation · Filières & Spécialisation
+              Système d'orientation Multi-Séries · Filières & Spécialisation
             </p>
           </div>
-          
-          {/* CONTENEUR BOUTONS AVEC EFFET SLIDE D'ARRIÈRE-PLAN */}
+
           <div className="relative flex bg-slate-100 p-1 rounded-lg border shadow-inner" style={{ borderColor: LINE }}>
-            {/* Fond noir glissant */}
             <div
               className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-slate-800 rounded shadow-md transition-transform duration-500 ease-in-out"
               style={{
@@ -443,7 +508,7 @@ export default function App() {
                   <div className="flex items-start justify-between mb-6 pb-5 border-b" style={{ borderColor: LINE }}>
                     <div>
                       <h2 className="font-display text-lg font-medium" style={{ color: INK }}>Bulletin de notes</h2>
-                      <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez chaque note sur 20 points.</p>
+                      <p className="font-sans text-sm mt-1" style={{ color: INK_SOFT }}>Saisissez les notes correspondant à votre série.</p>
                     </div>
                     <button
                       type="button"
@@ -457,11 +522,9 @@ export default function App() {
 
                   <form onSubmit={handleSubmit} className="space-y-8">
                     <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>
-                          Série du bac (Madagascar)
-                        </span>
-                      </div>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em] block mb-2" style={{ color: INK_SOFT }}>
+                        Série du bac
+                      </span>
                       <div className="flex gap-2">
                         {Object.entries(SERIES).map(([key, s]) => (
                           <button
@@ -482,7 +545,7 @@ export default function App() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
-                      {MATIERES.map(m => (
+                      {activeMatieres.map(m => (
                         <div key={m.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
                           <label htmlFor={m.id} className="font-sans text-sm">{m.label}</label>
                           <input
@@ -505,18 +568,12 @@ export default function App() {
                         <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale</span>
                         <div className="font-mono text-xl font-bold mt-0.5">{moyenneBac} <span className="text-xs font-normal text-slate-400">/20</span></div>
                       </div>
-                      {serie !== 'aucune' && (
-                        <div className="text-right">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Pondérée</span>
-                          <div className="font-mono text-xl font-bold mt-0.5" style={{ color: ACCENT }}>{moyennePonderee} <span className="text-xs font-normal text-slate-400">/20</span></div>
-                        </div>
-                      )}
                     </div>
 
                     {showBacQuestion && !rejected && (
-                      <div className="p-4 rounded border-l-4 animate-slideDown" style={{ backgroundColor: ACCENT_SOFT, borderColor: ACCENT }}>
+                      <div className="p-4 rounded border-l-4" style={{ backgroundColor: ACCENT_SOFT, borderColor: ACCENT }}>
                         <p className="text-sm font-medium mb-3" style={{ color: INK }}>
-                          Votre moyenne générale est inférieure à 10 ({moyenneBac}/20). Avez-vous quand même réussi votre examen du Bac ?
+                          Votre moyenne est inférieure à 10 ({moyenneBac}/20). Avez-vous obtenu votre Bac ?
                         </p>
                         <div className="flex gap-3">
                           <button
@@ -540,8 +597,8 @@ export default function App() {
                     )}
 
                     {rejected && (
-                      <div className="p-4 rounded border bg-slate-50 text-center text-sm font-medium text-slate-600 animate-fadeIn">
-                        Il est recommandé de redoubler d'efforts ou de se préparer pour une session de rattrapage avant d'envisager une orientation supérieure.
+                      <div className="p-4 rounded border bg-slate-50 text-center text-sm font-medium text-slate-600">
+                        Il est recommandé d'envisager un redoublement ou un rattrapage avant de choisir une filière.
                       </div>
                     )}
 
@@ -563,10 +620,10 @@ export default function App() {
 
               <section className="lg:col-span-5 space-y-6">
                 {results && (
-                  <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+                  <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6" style={{ borderColor: LINE }}>
                     <div>
                       <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
-                        TOP 3 · RECOMMANDATIONS DE FILIÈRES
+                        TOP 3 · RECOMMANDATIONS ({serie.toUpperCase()})
                       </p>
                       <h2 className="font-serif text-2xl font-bold mt-1" style={{ color: INK }}>
                         Recommandations
@@ -742,7 +799,7 @@ export default function App() {
 
               <section className="lg:col-span-5 space-y-6">
                 {branchResults && (
-                  <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6 animate-fadeIn" style={{ borderColor: LINE }}>
+                  <div className="bg-white rounded-2xl p-6 border shadow-sm space-y-6" style={{ borderColor: LINE }}>
                     <div>
                       <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-400">
                         TOP 3 · RECOMMANDATIONS DE BRANCHES
