@@ -1,0 +1,4 @@
+*.csv
+*.joblib
+prediction-filiere_recommandee/models/best_pipeline_branch.joblib
+prediction-filiere_recommandee/models/best_pipeline_filiere_litteraire.joblib
