@@ -159,7 +159,7 @@ def entrainer_et_evaluer_branche(data_path, model_output_name, encoder_output_na
     print(f"✅ Pipeline Branche sauvegardé dans 'models/{model_output_name}'.\n")
 
 if __name__ == '__main__':
-    series_list = ['aucune', 'scientifique', 'litteraire', 'ose']
+    series_list = ['scientifique', 'litteraire', 'ose']
 
     for serie in series_list:
         entrainer_et_evaluer_filiere(

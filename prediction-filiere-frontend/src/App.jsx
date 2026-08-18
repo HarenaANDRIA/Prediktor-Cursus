@@ -2,35 +2,79 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const MATIERES = [
-  { id: 'mathematiques', label: 'Mathématiques' },
-  { id: 'physique', label: 'Physique' },
-  { id: 'chimie', label: 'Chimie' },
-  { id: 'science_de_la_vie_et_de_la_terre', label: 'Science de la vie et de la terre' },
-  { id: 'statistiques_et_probabilites', label: 'Statistiques et Probabilités' },
+  { id: 'malagasy', label: 'Malagasy' },
   { id: 'francais', label: 'Français' },
-  { id: 'anglais', label: 'Anglais' },
-  { id: 'philosophie', label: 'Philosophie' },
-  { id: 'histoire_et_geographie', label: 'Histoire et Géographie' },
-  { id: 'test_psychotechnique', label: 'Test Psychotechnique' }
+  { id: 'anglais', label: 'Anglais (LV1/LV2)' },
+  { id: 'histoire_et_geographie', label: 'Histoire-Géographie (HG)' },
+  { id: 'philosophie', label: 'Philosophie (Philo)' },
+  { id: 'mathematiques', label: 'Mathématiques' },
+  { id: 'sciences_physiques_et_chimiques', label: 'Sciences Physiques et Chimiques (SPC)' },
+  { id: 'science_de_la_vie_et_de_la_terre', label: 'Sciences de la Vie et de la Terre (SVT)' },
+  { id: 'sciences_economiques_et_sociales', label: 'Sciences Économiques et Sociales (SES)' },
+  { id: 'test_psychotechnique', label: 'Test Psychotechnique' },
 ];
 
 const SERIES = {
-  aucune: {
-    label: 'Aucune',
-    matieres: ['mathematiques', 'physique', 'chimie', 'science_de_la_vie_et_de_la_terre', 'statistiques_et_probabilites', 'francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique']
-  },
   scientifique: {
-    label: 'Scientifique',
-    matieres: ['mathematiques', 'physique', 'chimie', 'science_de_la_vie_et_de_la_terre', 'statistiques_et_probabilites', 'francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique']
+    label: 'Scientifique (S)',
+    coefficients: {
+      malagasy: 3,
+      francais: 2,
+      anglais: 2,
+      histoire_et_geographie: 2,
+      philosophie: 2,
+      mathematiques: 6,
+      sciences_physiques_et_chimiques: 6,
+      science_de_la_vie_et_de_la_terre: 6,
+      sciences_economiques_et_sociales: 1,
+      test_psychotechnique: 1,
+    },
+    matieres: [
+      'malagasy', 'francais', 'anglais', 'histoire_et_geographie', 'philosophie',
+      'mathematiques', 'sciences_physiques_et_chimiques', 'science_de_la_vie_et_de_la_terre',
+      'sciences_economiques_et_sociales', 'test_psychotechnique'
+    ]
   },
   litteraire: {
-    label: 'Littéraire',
-    matieres: ['francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique', 'statistiques_et_probabilites']
+    label: 'Littéraire (L)',
+    coefficients: {
+      malagasy: 6,
+      francais: 5,
+      anglais: 5,
+      histoire_et_geographie: 4,
+      philosophie: 5,
+      mathematiques: 1,
+      sciences_physiques_et_chimiques: 1,
+      science_de_la_vie_et_de_la_terre: 1,
+      sciences_economiques_et_sociales: 1,
+      test_psychotechnique: 1,
+    },
+    matieres: [
+      'malagasy', 'francais', 'anglais', 'histoire_et_geographie', 'philosophie',
+      'mathematiques', 'sciences_physiques_et_chimiques', 'science_de_la_vie_et_de_la_terre',
+      'sciences_economiques_et_sociales', 'test_psychotechnique'
+    ]
   },
   ose: {
     label: 'OSE',
-    matieres: ['mathematiques', 'francais', 'anglais', 'philosophie', 'histoire_et_geographie', 'test_psychotechnique', 'statistiques_et_probabilites']
-  },
+    coefficients: {
+      malagasy: 3,
+      francais: 3,
+      anglais: 2,
+      histoire_et_geographie: 6,
+      philosophie: 3,
+      mathematiques: 6,
+      sciences_physiques_et_chimiques: 1,
+      science_de_la_vie_et_de_la_terre: 1,
+      sciences_economiques_et_sociales: 6,
+      test_psychotechnique: 1,
+    },
+    matieres: [
+      'malagasy', 'francais', 'anglais', 'histoire_et_geographie', 'philosophie',
+      'mathematiques', 'sciences_physiques_et_chimiques', 'science_de_la_vie_et_de_la_terre',
+      'sciences_economiques_et_sociales', 'test_psychotechnique'
+    ]
+  }
 };
 
 const FILIERES_CONFIG = {
@@ -292,7 +336,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [showBacQuestion, setShowBacQuestion] = useState(false);
   const [rejected, setRejected] = useState(false);
-  const [serie, setSerie] = useState('aucune');
+  const [serie, setSerie] = useState('scientifique');
 
   const initialFiliereKey = Object.keys(FILIERES_CONFIG)[0];
   const [selectedFiliereKey, setSelectedFiliereKey] = useState(initialFiliereKey);
@@ -302,6 +346,7 @@ export default function App() {
   const [branchError, setBranchError] = useState(null);
 
   const activeMatieres = MATIERES.filter(m => SERIES[serie].matieres.includes(m.id));
+  const currentCoeffs = SERIES[serie].coefficients;
 
   const handleInputChange = (id, value) => {
     const val = parseFloat(value);
@@ -332,7 +377,7 @@ export default function App() {
     setError(null);
     setShowBacQuestion(false);
     setRejected(false);
-    setSerie('aucune');
+    setSerie('scientifique');
   };
 
   const handleResetBranch = () => {
@@ -341,9 +386,20 @@ export default function App() {
     setBranchError(null);
   };
 
-  const valuesBac = activeMatieres.map(m => notes[m.id]).filter(v => typeof v === 'number');
-  const moyNumBac = valuesBac.length ? valuesBac.reduce((a, b) => a + b, 0) / valuesBac.length : 0;
-  const moyenneBac = valuesBac.length ? moyNumBac.toFixed(2) : '0.00';
+  let sumWeightedBac = 0;
+  let sumCoeffsBac = 0;
+
+  activeMatieres.forEach(m => {
+    const val = notes[m.id];
+    const coeff = currentCoeffs[m.id] || 1;
+    if (typeof val === 'number' && !isNaN(val)) {
+      sumWeightedBac += val * coeff;
+      sumCoeffsBac += coeff;
+    }
+  });
+
+  const moyNumBac = sumCoeffsBac > 0 ? sumWeightedBac / sumCoeffsBac : 0;
+  const moyenneBac = sumCoeffsBac > 0 ? moyNumBac.toFixed(2) : '0.00';
 
   const currentModules = FILIERES_CONFIG[selectedFiliereKey]?.modules || [];
   const moduleValues = currentModules
@@ -546,8 +602,20 @@ export default function App() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
                       {activeMatieres.map(m => (
-                        <div key={m.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
-                          <label htmlFor={m.id} className="font-sans text-sm">{m.label}</label>
+                        <div 
+                          key={m.id} 
+                          className="flex items-center justify-between py-2.5 border-b gap-3 min-h-[48px]" 
+                          style={{ borderColor: LINE }}
+                        >
+                          <label 
+                            htmlFor={m.id} 
+                            className="font-sans text-sm leading-snug flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 min-w-0 pr-2 cursor-pointer"
+                          >
+                            <span>{m.label}</span>
+                            <span className="font-mono text-[10px] text-slate-400 font-normal whitespace-nowrap shrink-0">
+                              (Coef. {currentCoeffs[m.id] || 1})
+                            </span>
+                          </label>
                           <input
                             id={m.id}
                             type="number"
@@ -556,7 +624,7 @@ export default function App() {
                             step="0.25"
                             value={notes[m.id]}
                             onChange={e => handleInputChange(m.id, e.target.value)}
-                            className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
+                            className="font-mono text-base font-semibold text-right w-16 shrink-0 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
                             required
                           />
                         </div>
@@ -565,7 +633,7 @@ export default function App() {
 
                     <div className="p-4 rounded border flex items-center justify-between" style={{ borderColor: LINE, backgroundColor: '#FAFAFA' }}>
                       <div>
-                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale</span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em]" style={{ color: INK_SOFT }}>Moyenne Générale Pondérée</span>
                         <div className="font-mono text-xl font-bold mt-0.5">{moyenneBac} <span className="text-xs font-normal text-slate-400">/20</span></div>
                       </div>
                     </div>
@@ -759,8 +827,14 @@ export default function App() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
                       {currentModules.map(mod => (
-                        <div key={mod.id} className="flex items-baseline justify-between py-2.5 border-b" style={{ borderColor: LINE }}>
-                          <label htmlFor={mod.id} className="font-sans text-sm">{mod.label}</label>
+                        <div 
+                          key={mod.id} 
+                          className="flex items-center justify-between py-2.5 border-b gap-3 min-h-[48px]" 
+                          style={{ borderColor: LINE }}
+                        >
+                          <label htmlFor={mod.id} className="font-sans text-sm leading-snug min-w-0 pr-2 cursor-pointer">
+                            {mod.label}
+                          </label>
                           <input
                             id={mod.id}
                             type="number"
@@ -769,7 +843,7 @@ export default function App() {
                             step="0.25"
                             value={moduleNotes[mod.id] ?? ''}
                             onChange={e => handleModuleNoteChange(mod.id, e.target.value)}
-                            className="font-mono text-base font-semibold text-right w-16 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
+                            className="font-mono text-base font-semibold text-right w-16 shrink-0 bg-transparent border-b-2 focus:outline-none transition-colors focus:border-slate-800"
                             required
                           />
                         </div>

@@ -1,6 +1,5 @@
 """
-Génération synthétique des 4 datasets Bac par Série :
-- dataset_bac_aucune.csv
+Génération synthétique des 3 datasets Bac par Série :
 - dataset_bac_scientifique.csv
 - dataset_bac_litteraire.csv
 - dataset_bac_ose.csv
@@ -14,22 +13,12 @@ RNG_SEED = 42
 rng = np.random.default_rng(RNG_SEED)
 
 ALL_FEATURE_COLS = [
-    'mathematiques', 'physique', 'chimie', 'francais', 'histoire_et_geographie',
-    'philosophie', 'anglais', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre',
-    'statistiques_et_probabilites'
+    'malagasy', 'francais', 'anglais', 'histoire_et_geographie', 'philosophie',
+    'mathematiques', 'sciences_physiques_et_chimiques', 'science_de_la_vie_et_de_la_terre',
+    'sciences_economiques_et_sociales', 'test_psychotechnique'
 ]
 
 SERIES_CONFIG = {
-    'aucune': {
-        'features': ALL_FEATURE_COLS,
-        'filieres': [
-            'science_des_donnees_et_intelligence_artificielle', 'medecine_et_pharmacie',
-            'agronomie_et_biotechnologie', 'sciences_environnementales', 'science_marine',
-            'tourisme_et_hotellerie', 'langues_et_communication', 'sociologie',
-            'sciences_actuarielles', 'ingenierie_et_science_generale',
-            'droit_et_sciences_politiques', 'psychologie', 'anthropologie', 'archeologie'
-        ]
-    },
     'scientifique': {
         'features': ALL_FEATURE_COLS,
         'filieres': [
@@ -41,20 +30,14 @@ SERIES_CONFIG = {
         ]
     },
     'litteraire': {
-        'features': [
-            'francais', 'histoire_et_geographie', 'philosophie', 'anglais',
-            'test_psychotechnique', 'statistiques_et_probabilites'
-        ],
+        'features': ALL_FEATURE_COLS,
         'filieres': [
             'tourisme_et_hotellerie', 'langues_et_communication', 'sociologie',
             'droit_et_sciences_politiques', 'psychologie', 'anthropologie', 'archeologie'
         ]
     },
     'ose': {
-        'features': [
-            'mathematiques', 'francais', 'histoire_et_geographie', 'philosophie',
-            'anglais', 'test_psychotechnique', 'statistiques_et_probabilites'
-        ],
+        'features': ALL_FEATURE_COLS,
         'filieres': [
             'tourisme_et_hotellerie', 'langues_et_communication', 'sociologie',
             'droit_et_sciences_politiques', 'psychologie', 'anthropologie', 'archeologie',
@@ -66,13 +49,13 @@ SERIES_CONFIG = {
 FILIERES_INFO = {
     'science_des_donnees_et_intelligence_artificielle': {
         'label': "Science des Données et Intelligence Artificielle",
-        'required': ['mathematiques', 'statistiques_et_probabilites', 'test_psychotechnique'],
+        'required': ['mathematiques', 'test_psychotechnique'],
         'single_rule': None,
     },
     'medecine_et_pharmacie': {
         'label': "Médecine et Pharmacie",
-        'required': ['science_de_la_vie_et_de_la_terre', 'chimie'],
-        'single_rule': ['science_de_la_vie_et_de_la_terre', 'chimie'],
+        'required': ['science_de_la_vie_et_de_la_terre', 'sciences_physiques_et_chimiques'],
+        'single_rule': ['science_de_la_vie_et_de_la_terre', 'sciences_physiques_et_chimiques'],
     },
     'agronomie_et_biotechnologie': {
         'label': "Agronomie et Biotechnologie",
@@ -91,28 +74,28 @@ FILIERES_INFO = {
     },
     'tourisme_et_hotellerie': {
         'label': "Tourisme et Hôtellerie",
-        'required': ['histoire_et_geographie', 'francais', 'anglais'],
+        'required': ['histoire_et_geographie', 'francais', 'anglais', 'malagasy'],
         'single_rule': None,
     },
     'langues_et_communication': {
         'label': "Langues et Communication",
-        'required': ['francais', 'anglais'],
-        'single_rule': ['francais', 'anglais'],
+        'required': ['francais', 'anglais', 'malagasy'],
+        'single_rule': ['francais', 'anglais', 'malagasy'],
     },
     'sociologie': {
         'label': "Sociologie",
-        'required': ['philosophie', 'anglais', 'francais'],
+        'required': ['philosophie', 'anglais', 'francais', 'malagasy'],
         'single_rule': ['philosophie'],
     },
     'sciences_actuarielles': {
         'label': "Sciences Actuarielles",
-        'required': ['francais', 'anglais', 'statistiques_et_probabilites'],
-        'single_rule': ['statistiques_et_probabilites'],
+        'required': ['mathematiques', 'sciences_economiques_et_sociales'],
+        'single_rule': ['sciences_economiques_et_sociales'],
     },
     'ingenierie_et_science_generale': {
         'label': "Ingénierie et Science Générale",
-        'required': ['mathematiques', 'physique', 'chimie', 'test_psychotechnique'],
-        'single_rule': ['mathematiques', 'physique'],
+        'required': ['mathematiques', 'sciences_physiques_et_chimiques', 'test_psychotechnique'],
+        'single_rule': ['mathematiques', 'sciences_physiques_et_chimiques'],
     },
     'droit_et_sciences_politiques': {
         'label': "Droit et Sciences Politiques",
@@ -126,12 +109,12 @@ FILIERES_INFO = {
     },
     'anthropologie': {
         'label': "Anthropologie",
-        'required': ['histoire_et_geographie', 'francais'],
+        'required': ['histoire_et_geographie', 'francais', 'science_de_la_vie_et_de_la_terre', 'anglais'],
         'single_rule': ['histoire_et_geographie'],
     },
     'archeologie': {
         'label': "Archéologie",
-        'required': ['histoire_et_geographie', 'francais'],
+        'required': ['histoire_et_geographie', 'francais', 'anglais'],
         'single_rule': ['histoire_et_geographie'],
     },
 }

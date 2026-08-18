@@ -18,36 +18,24 @@ app.add_middleware(
 )
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Pointer vers le dossier models/ situé à la racine du projet (en dehors du dossier api/)
 MODELS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "models"))
 
-# Cartographie explicite des matières par série au cas où feature_names_in_ n'est pas disponible
+ALL_FEATURE_COLS = [
+    'malagasy', 'francais', 'anglais', 'histoire_et_geographie', 'philosophie',
+    'mathematiques', 'sciences_physiques_et_chimiques', 'science_de_la_vie_et_de_la_terre',
+    'sciences_economiques_et_sociales', 'test_psychotechnique'
+]
+
 SERIES_FEATURES = {
-    'aucune': [
-        'mathematiques', 'physique', 'chimie', 'francais', 'histoire_et_geographie',
-        'philosophie', 'anglais', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre',
-        'statistiques_et_probabilites'
-    ],
-    'scientifique': [
-        'mathematiques', 'physique', 'chimie', 'francais', 'histoire_et_geographie',
-        'philosophie', 'anglais', 'test_psychotechnique', 'science_de_la_vie_et_de_la_terre',
-        'statistiques_et_probabilites'
-    ],
-    'litteraire': [
-        'francais', 'histoire_et_geographie', 'philosophie', 'anglais',
-        'test_psychotechnique', 'statistiques_et_probabilites'
-    ],
-    'ose': [
-        'mathematiques', 'francais', 'histoire_et_geographie', 'philosophie',
-        'anglais', 'test_psychotechnique', 'statistiques_et_probabilites'
-    ]
+    'scientifique': ALL_FEATURE_COLS,
+    'litteraire': ALL_FEATURE_COLS,
+    'ose': ALL_FEATURE_COLS
 }
 
-# Dictionnaires pour charger les modèles et label encoders de chaque série
 pipelines_filiere = {}
 encoders_filiere = {}
 
-series_keys = ['aucune', 'scientifique', 'litteraire', 'ose']
+series_keys = ['scientifique', 'litteraire', 'ose']
 
 for s in series_keys:
     p_path = os.path.join(MODELS_DIR, f"best_pipeline_filiere_{s}.joblib")
@@ -62,7 +50,6 @@ for s in series_keys:
     else:
         print(f"⚠️ Modèles introuvables pour la série {s} dans {MODELS_DIR}")
 
-# Chargement du modèle de branche
 pipeline_branch_path = os.path.join(MODELS_DIR, "best_pipeline_branch.joblib")
 encoder_branch_path = os.path.join(MODELS_DIR, "label_encoder_branch.joblib")
 
@@ -81,17 +68,17 @@ except Exception as e:
 
 
 class NotesEtudiantInput(BaseModel):
-    serie: str = "aucune"
-    mathematiques: Optional[float] = 10.0
-    physique: Optional[float] = 10.0
-    chimie: Optional[float] = 10.0
+    serie: str = "scientifique"
+    malagasy: Optional[float] = 10.0
     francais: Optional[float] = 10.0
+    anglais: Optional[float] = 10.0
     histoire_et_geographie: Optional[float] = 10.0
     philosophie: Optional[float] = 10.0
-    anglais: Optional[float] = 10.0
-    test_psychotechnique: Optional[float] = 10.0
+    mathematiques: Optional[float] = 10.0
+    sciences_physiques_et_chimiques: Optional[float] = 10.0
     science_de_la_vie_et_de_la_terre: Optional[float] = 10.0
-    statistiques_et_probabilites: Optional[float] = 10.0
+    sciences_economiques_et_sociales: Optional[float] = 10.0
+    test_psychotechnique: Optional[float] = 10.0
 
 
 class BranchInput(BaseModel):
@@ -102,9 +89,9 @@ class BranchInput(BaseModel):
 @app.post("/predict")
 def predict(data: NotesEtudiantInput):
     try:
-        serie_key = (data.serie or "aucune").lower()
+        serie_key = (data.serie or "scientifique").lower()
         if serie_key not in pipelines_filiere or serie_key not in encoders_filiere:
-            serie_key = "aucune"
+            serie_key = "scientifique"
 
         pipeline = pipelines_filiere.get(serie_key)
         encoder = encoders_filiere.get(serie_key)
@@ -115,7 +102,6 @@ def predict(data: NotesEtudiantInput):
                 detail=f"Modèle pour la série '{serie_key}' non chargé. Vérifiez l'emplacement '{MODELS_DIR}'."
             )
 
-        # 1. Traitement des données d'entrée et remplacement des None par 10.0
         input_dict = data.model_dump() if hasattr(data, "model_dump") else data.dict()
         input_dict.pop('serie', None)
 
@@ -125,22 +111,19 @@ def predict(data: NotesEtudiantInput):
 
         df_input = pd.DataFrame([input_dict])
 
-        # 2. Récupération des features attendues
         if hasattr(pipeline, "feature_names_in_"):
             expected_cols = list(pipeline.feature_names_in_)
         elif hasattr(pipeline, "named_steps") and hasattr(pipeline.named_steps.get('classifier'), "feature_names_in_"):
             expected_cols = list(pipeline.named_steps['classifier'].feature_names_in_)
         else:
-            expected_cols = SERIES_FEATURES.get(serie_key, SERIES_FEATURES['aucune'])
+            expected_cols = SERIES_FEATURES.get(serie_key, SERIES_FEATURES['scientifique'])
 
-        # 3. Réalignement strict du DataFrame
         for col in expected_cols:
             if col not in df_input.columns:
                 df_input[col] = 10.0
 
         df_input = df_input[expected_cols]
 
-        # 4. Calcul des prédictions
         probabilities = pipeline.predict_proba(df_input)[0]
         classes_noms = encoder.classes_
 

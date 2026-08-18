@@ -4,7 +4,7 @@ import numpy as np
 
 os.makedirs('data/processed', exist_ok=True)
 
-series_list = ['aucune', 'scientifique', 'litteraire', 'ose']
+series_list = ['scientifique', 'litteraire', 'ose']
 
 for serie in series_list:
     data_path_bac = f'data/raw/dataset_bac_{serie}.csv'
