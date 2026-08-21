@@ -1,20 +1,24 @@
-# Environnement virtuel Python
-.venv/
-venv/
-ENV/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Caches Python et fichiers d'exécution
-__pycache__/
-*.py[cod]
-*$py.class
+node_modules
+dist
+dist-ssr
+*.local
 
-# Checkpoints Jupyter Notebook
-.ipynb_checkpoints/
-
-# Fichiers de configuration VS Code / IDE
-.vscode/
-.idea/
-
-# Fichiers système
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
