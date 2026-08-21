@@ -865,7 +865,7 @@ export default function App() {
                       className="w-full py-4 px-6 rounded font-mono text-xs uppercase tracking-[0.15em] font-medium text-center transition-all shadow-md hover:shadow-lg"
                       style={{ backgroundColor: INK, color: PAPER }}
                     >
-                      {branchLoading ? "Analyse en cours..." : "Découvrir ma branche idéale"}
+                      {branchLoading ? "Analyse en cours..." : "Découvrir ma spécialisation idéale"}
                     </button>
                   </form>
                 </div>

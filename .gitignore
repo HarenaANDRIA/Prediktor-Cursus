@@ -3,3 +3,10 @@
 prediction-filiere_recommandee/models/best_pipeline_branch.joblib
 prediction-filiere_recommandee/models/best_pipeline_filiere_litteraire.joblib
 *.txt
+Prediktor-Frontend/node_modules/.bin/autoprefixer
+*.cmd
+*.ps1
+/Prediktor-Frontend/node_modules/.bin
+/Prediktor-Frontend/node_modules
+
+node_modules/
